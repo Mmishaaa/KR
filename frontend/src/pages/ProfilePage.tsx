@@ -1,63 +1,50 @@
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import GenericPage from "./GenericPage";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import ProfileHeader from "../components/profile/profileHeader";
-import { Box, Container } from '@mui/material';
-import { Gender } from '../shared/enums/gender';
-import { SubscriptionType } from '../shared/enums/subscriptionType';
+import { Box, Container, Typography } from '@mui/material';
 import { UserWithSubscription } from '../shared/interfaces/user';
 import ProfileDescription from '../components/profile/profileDescription';
 import ProfileGallery from '../components/profile/profileGallery';
 import ProfileSubscription from '../components/profile/profileSubscription';
-
-const user: UserWithSubscription = {
-  id: "user-123",
-  fusionUserId: "fusion-456",
-  firstName: "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
-  lastName: "DoeJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
-  age: 30,
-  city: "New YorkJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
-  description: "Software developer and tech enthusiastJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn.",
-  gender: Gender.Man,
-  email: "john.doe@example.comJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
-  photos: [
-    {
-      id: "photo-789",
-      isAvatar: true,
-      photoURL: "https://randomuser.me/api/portraits/men/3.jpg",
-      userId: "user-123"
-    },
-    {
-      id: "photo-790",
-      isAvatar: false,
-      photoURL: "https://randomuser.me/api/portraits/men/4.jpg",
-      userId: "user-123"
-    },
-    {
-      id: "photo-790",
-      isAvatar: false,
-      photoURL: "https://randomuser.me/api/portraits/men/4.jpg",
-      userId: "user-123"
-    },
-    {
-      id: "photo-790",
-      isAvatar: false,
-      photoURL: "https://randomuser.me/api/portraits/men/4.jpg",
-      userId: "user-123"
-    },
-  ],
-  subscription: {
-    id: "subscription-001",
-    email: "john.doe@example.com",
-    subscriptionType: SubscriptionType.Premium,
-    expiresAt: new Date('2025-07-26'),
-    createdAt: new Date('2024-07-26'),
-    updatedAt: new Date()
-  }
-};
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state/store';
+import { fetchUserFailure, fetchUserStart, fetchUserSuccess } from '../../state/user/userSlice';
 
 const ProfilePage: FC = () => {
+  const dispatch = useDispatch();
+  const { user, isLoading, error } = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      dispatch(fetchUserStart());
+      try {
+        const response = await fetch("http://localhost:5000/api/users/1");
+        const userData: UserWithSubscription = await response.json();
+        
+        dispatch(fetchUserSuccess(userData))
+      } catch(error) {
+        dispatch(fetchUserFailure("Failed to load user data"))
+      }
+    };
+
+    fetchUser();
+  }, [dispatch])
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error: {error}</Typography>;
+  }
+
+  if (!user) {
+    return <Typography>No user data available</Typography>;
+  }
+
   return (
     <GenericPage title="Profile" icons={[<SettingsOutlinedIcon/>, <CreateOutlinedIcon/>]}>
       <Container maxWidth="sm" sx={{ margin:"32px 0",
