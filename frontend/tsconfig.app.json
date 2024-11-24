@@ -24,7 +24,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src",
-    "state/store.ts"
+    "src/**/*",
+    "state/**/*"
   ]
 }
