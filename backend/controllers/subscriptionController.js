@@ -1,4 +1,5 @@
 import { models } from "../src/models/models.js";
+import ApiError from "../errors/apiError.js"
 
 const { Subscription, User } = models;
 
@@ -7,7 +8,7 @@ class SubscriptionController {
     res.status(501).json({message: "not implemented"})
   }
 
-  async deleteAsync(req, res) {
+  async deleteAsync(req, res, next) {
     try {
       const { id } = req.params;
 
@@ -20,8 +21,7 @@ class SubscriptionController {
 
       return res.status(200).json({ message: "Subscription deleted" });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while deleting subscription" });
+      next(ApiError.internal("Error while deleting a subscription: " + error.message))
     }
   }
 
@@ -36,8 +36,7 @@ class SubscriptionController {
 
       return res.status(200).json(subscription); 
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while fetching subscription" });
+      next(ApiError.internal("Error while fetching a subscription: " + error.message))
     }
   }
 
@@ -47,8 +46,7 @@ class SubscriptionController {
 
       return res.status(200).json(subscriptions); 
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while fetching subscriptions" });
+      next(ApiError.internal("Error while fetching subscriptions: " + error.message))
     }
   }
 
@@ -86,8 +84,7 @@ class SubscriptionController {
 
       return res.status(200).json(currentSubscription);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while creating subscription" });
+      next(ApiError.internal("Error while creating a subscription: " + error.message))
     }
 }
 

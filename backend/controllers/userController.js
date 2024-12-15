@@ -41,8 +41,7 @@ class UserController {
       return res.status(201).json(newUser);
     }
     catch(error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while creating a user" });
+      next(ApiError.internal("Error while creating a user: " + error.message))
     }
   }
 
@@ -59,8 +58,7 @@ class UserController {
       return res.status(200).json({ message: "User deleted" });
     } 
     catch(error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while deleting a user" });
+      next(ApiError.internal("Error while deleting a user: " + error.message))
     }
   }
 
@@ -75,19 +73,24 @@ class UserController {
       return res.status(200).json(user);
     }
     catch(error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while retrieving a user" });
+      next(ApiError.internal("Error while retrieving a user: " + error.message))
     }
   }
 
   async getAllAsync(req, res) {
     try {
-      const users = await User.findAll();
+      let { limit, page } = req.query; 
+
+      limit = limit || 10;
+      page = page || 1;
+
+      let offset = page * limit - limit
+
+      const users = await User.findAndCountAll({limit, offset});
       return res.status(200).json(users);
     }
     catch(error) {
-      console.error(error);
-      return res.status(500).json({ message: "Error while retrieving users" });
+      next(ApiError.internal("Error while retrieving users: " + error.message))
     }
   }
 
@@ -115,8 +118,7 @@ class UserController {
         return res.status(200).json(user);
       } 
       catch(error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error while updating a user" });
+        next(ApiError.internal("Error while updating a user: " + error.message))
       }
   }
 }
