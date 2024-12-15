@@ -9,7 +9,7 @@ import path from 'path';
 
 dotenv.config();
 
-const { User, Subscription, Photo } = models;
+const { User, Subscription, Photo, Chat} = models;
 
 const generateJwt = (id, email, role) => {
   if (!process.env.SECRET_KEY) {
@@ -148,7 +148,15 @@ class UserController {
   async getByIdAsync(req, res, next) {
     try {
       const { id } = req.params;
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(id, {
+        include: [
+          {
+            model: Chat,
+            as: 'chats',
+            attributes: ['id'],
+          },
+        ],
+      });
       if (!user) {
         throw new ApiError(404, "User not found");
       }
@@ -169,7 +177,17 @@ class UserController {
 
       let offset = page * limit - limit
 
-      const users = await User.findAndCountAll({limit, offset});
+      const users = await User.findAndCountAll({
+        limit,
+        offset,
+        include: [
+          {
+            model: Chat,
+            as: 'chats',
+            attributes: ['id'],
+          },
+        ],
+      });
       return res.status(200).json(users);
     }
     catch(error) {
