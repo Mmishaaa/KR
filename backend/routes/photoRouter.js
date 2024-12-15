@@ -5,11 +5,9 @@ const photoRouter = new Router();
 
 photoRouter.post("/", photoController.createAsync)
 
-photoRouter.post("/:id", photoController.getByIdAsync)
+photoRouter.get("/:id", photoController.getByIdAsync)
 
-photoRouter.post("/", photoController.getAllAsync)
-
-photoRouter.get("/:id", photoController.updateAsync)
+photoRouter.get("/", photoController.getAllAsync)
 
 photoRouter.delete("/:id", photoController.deleteAsync)
 

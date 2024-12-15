@@ -5,14 +5,23 @@ import mySequelize from "./src/db/db.js";
 import { models } from "./src/models/models.js"
 import { router } from "./routes/index.js";
 import errorHandler from "./middleware/errorHandlingMiddleware.js"
+import fileUpload  from "express-fileupload"
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.resolve(__dirname, 'static'))) 
+app.use(fileUpload({}))
 app.use("/api", router);
 
 app.use(errorHandler)

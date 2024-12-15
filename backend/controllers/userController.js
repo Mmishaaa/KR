@@ -3,10 +3,13 @@ import { models } from "../src/models/models.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken"
+import { v4 as uuidv4 } from 'uuid';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 dotenv.config();
 
-const { User, Subscription } = models;
+const { User, Subscription, Photo } = models;
 
 const generateJwt = (id, email, role) => {
   if (!process.env.SECRET_KEY) {
@@ -177,8 +180,31 @@ class UserController {
   async updateAsync(req, res, next) {
       try {
         const { id } = req.params;
-        const { email, firstName, lastName, age, password, gender, subscriptionId, role } = req.body;
+        const { email, firstName, lastName, age, password, gender, subscriptionId, role, isAvatar } = req.body
+        
+        if(req.files) {
+          const { img } = req.files;
+
+          if(img) {
+            let fileName = uuidv4() + ".jpg"
+
+            const __filename = fileURLToPath(import.meta.url);
+            const __dirname = path.dirname(__filename);
+
+            img.mv(path.resolve(__dirname, '..', 'static', fileName))
   
+            const currentUtc = new Date()
+  
+            const photo = await Photo.create({
+              photoURL: fileName,
+              isAvatar: isAvatar || false,
+              userId: id,
+              createdAt: currentUtc,
+              updatedAt: currentUtc
+            })
+          }
+        }
+
         const user = await User.findByPk(id);
         if (!user) {
           throw new ApiError(404, "User not found");
@@ -195,12 +221,19 @@ class UserController {
   
         await user.save();
   
-        return res.status(200).json(user);
+        var userWithoutPassword = getUserWithoutPasssword(user.toJSON());
+        return res.status(200).json(userWithoutPassword);
+
       } 
       catch(error) {
         next(ApiError.internal("Error while updating a user: " + error.message))
       }
   }
+}
+
+const getUserWithoutPasssword = (user) => {
+  const { password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
 }
 
 export default new UserController;
