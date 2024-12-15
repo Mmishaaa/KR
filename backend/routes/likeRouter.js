@@ -5,14 +5,10 @@ const likeRouter = new Router();
 
 likeRouter.post("/", likeController.createAsync)
 
-likeRouter.post("/:id", likeController.getByIdAsync)
+likeRouter.get("/:id", likeController.getByIdAsync)
 
-likeRouter.post("/", likeController.getAllAsync)
-
-likeRouter.get("/:id", likeController.updateAsync)
+likeRouter.get("/", likeController.getAllAsync)
 
 likeRouter.delete("/:id", likeController.deleteAsync)
-
-likeRouter.put("/:id", likeController.updateAsync)
 
 export default likeRouter;
