@@ -17,10 +17,6 @@ const Chat = mySequelize.define("chat", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 }  
 })
 
-const ChatUser = mySequelize.define("chatUser", {
-  id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
-});
-
 const Message = mySequelize.define("message", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
   text: { type: DataTypes.STRING, allowNull: false },
@@ -45,9 +41,7 @@ const Photo = mySequelize.define("photo", {
 
 const Subscription = mySequelize.define("subscription", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
-  subscriptionType: { type: DataTypes.ENUM("Basic", "Premium", "VIP"), allowNull: false },
-  fusionUserId: { type: DataTypes.UUID, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  subscriptionType: { type: DataTypes.ENUM("BASIC", "PREMIUM", "VIP"), allowNull: false },
   expiresAt: { type: DataTypes.DATE, allowNull: false },
   createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
@@ -89,11 +83,9 @@ Photo.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 // Coordinates Relationships
 Coordinates.belongsTo(User);
 
-// Экспорт всех моделей через один объект
 export const models = {
   User,
   Chat,
-  ChatUser,
   Message,
   Like,
   Photo,

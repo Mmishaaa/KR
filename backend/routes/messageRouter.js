@@ -13,4 +13,6 @@ messageRouter.get("/:id", messageController.updateAsync)
 
 messageRouter.delete("/:id", messageController.deleteAsync)
 
+messageRouter.put("/:id", messageController.updateAsync)
+
 export default messageRouter;

@@ -17,8 +17,8 @@ router.use("/coordinates", coordinatesRouter)
 
 router.use("/likes", likeRouter)
 
-router.use("messages", messageRouter)
+router.use("/messages", messageRouter)
 
-router.use("photos", photoRouter)
+router.use("/photos", photoRouter)
 
-router.use("subscriptions", subscriptionRouter)
+router.use("/subscriptions", subscriptionRouter)

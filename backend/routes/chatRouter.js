@@ -13,4 +13,6 @@ chatRouter.get("/:id", chatController.updateAsync)
 
 chatRouter.delete("/:id", chatController.deleteAsync)
 
+chatRouter.put("/:id", chatController.updateAsync)
+
 export default chatRouter;

@@ -13,4 +13,6 @@ likeRouter.get("/:id", likeController.updateAsync)
 
 likeRouter.delete("/:id", likeController.deleteAsync)
 
+likeRouter.put("/:id", likeController.updateAsync)
+
 export default likeRouter;

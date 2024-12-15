@@ -13,4 +13,6 @@ coordinatesRouter.get("/:id", coordinatesController.updateAsync)
 
 coordinatesRouter.delete("/:id", coordinatesController.deleteAsync)
 
+coordinatesRouter.put("/:id", coordinatesController.updateAsync)
+
 export default coordinatesRouter;

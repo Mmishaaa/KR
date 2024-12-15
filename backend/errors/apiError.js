@@ -1,12 +1,12 @@
 export default class ApiError extends Error{
-  constructor(status, messgage) {
-    super();
+  constructor(status, message) {
+    super(message);
     this.status = status
-    this.message = messgage
+    this.message = message
   }
 
   static badRequest(message) {
-    return new ApiError(404, message)
+    return new ApiError(400, message)
   }
 
   static internal(message) {
@@ -15,5 +15,9 @@ export default class ApiError extends Error{
 
   static forbidden(message) {
     return new ApiError(403, message)
+  }
+
+  static notFound(message) {
+    return new ApiError(404, message);
   }
 }

@@ -13,4 +13,6 @@ photoRouter.get("/:id", photoController.updateAsync)
 
 photoRouter.delete("/:id", photoController.deleteAsync)
 
+photoRouter.put("/:id", photoController.updateAsync)
+
 export default photoRouter;

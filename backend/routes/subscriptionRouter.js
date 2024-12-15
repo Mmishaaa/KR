@@ -5,12 +5,12 @@ const subscriptionRouter = new Router();
 
 subscriptionRouter.post("/", subscriptionController.createAsync)
 
-subscriptionRouter.post("/:id", subscriptionController.getByIdAsync)
+subscriptionRouter.get("/", subscriptionController.getAllAsync)
 
-subscriptionRouter.post("/", subscriptionController.getAllAsync)
-
-subscriptionRouter.get("/:id", subscriptionController.updateAsync)
+subscriptionRouter.get("/:id", subscriptionController.getByIdAsync)
 
 subscriptionRouter.delete("/:id", subscriptionController.deleteAsync)
+
+subscriptionRouter.put("/", subscriptionController.updateAsync)
 
 export default subscriptionRouter;
