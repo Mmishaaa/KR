@@ -21,7 +21,6 @@ const ChatUser = mySequelize.define("chatUser", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
 });
 
-
 const Message = mySequelize.define("message", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
   text: { type: DataTypes.STRING, allowNull: false },
