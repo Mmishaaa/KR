@@ -84,9 +84,6 @@ class PhotoController {
     try {
       const { id } = req.params
       const { isAvatar } = req.body;
-  
-      console.log(id)
-      console.log(isAvatar)
 
       if (!id || typeof isAvatar === "undefined" ) {
         return res.status(400).json({ message: "ID and isAvatar are required" });
