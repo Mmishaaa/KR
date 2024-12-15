@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { models } from "../src/models/models.js"
+import { v4 as uuidv4 } from 'uuid';
 
 const { Photo } = models;
 
@@ -26,6 +27,7 @@ class PhotoController {
       updatedAt: currentUtc
     })
 
+    return photo
   }
   
   async deleteAsync(req, res) {
@@ -66,6 +68,8 @@ class PhotoController {
 
       limit = limit || 10;
       page = page || 1;
+
+      let offset = page * limit - limit
 
       const photos = await Photo.findAndCountAll({ limit: parseInt(limit), offset: parseInt(offset) });
 

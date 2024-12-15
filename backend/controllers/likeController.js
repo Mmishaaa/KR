@@ -1,18 +1,35 @@
 import { models } from "../src/models/models.js"
-const { Like, User } = models;
+const { Like, User, Chat } = models;
 
 class LikeController {
   async createAsync(req, res) {
     try {
       const { senderId, receiverId } = req.body;
-
+  
       if (!senderId || !receiverId) {
         return res.status(400).json({ message: "SenderId and ReceiverId are required" });
       }
-
+  
       const like = await Like.create({ senderId, receiverId });
-
+  
+      const match = await Like.findOne({
+        where: { senderId: receiverId, receiverId: senderId },
+      });
+  
+      if (match) {
+        const chat = await Chat.create();
+  
+        await chat.addUsers([senderId, receiverId]);
+  
+        return res.status(201).json({
+          message: "Like created successfully and match found. Chat created.",
+          like,
+          chat,
+        });
+      }
+  
       return res.status(201).json({ message: "Like created successfully", like });
+  
     } catch (error) {
       return res.status(500).json({ message: "Error creating like", error: error.message });
     }
