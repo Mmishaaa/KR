@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../state/store';
 import { useParams } from 'react-router-dom';
 import { fetchUserById } from '../../state/user/userSlice';
+import ProfileSubscription from '../components/profile/profileSubscription';
 
 const ProfilePage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -45,7 +46,7 @@ const ProfilePage: FC = () => {
             <ProfileHeader firstName={user.firstName} email={user.email} photos={user.photos} />
             <ProfileGallery photos={user.photos} />
             <ProfileDescription description={user.description} city={user.city} age={user.age} email={user.email} gender={user.gender} />
-            {/* <ProfileSubscription subscription={user.subscription}/> */}
+            <ProfileSubscription subscription={user.subscription}/>
           </Box>
       </Container>
     </GenericPage>

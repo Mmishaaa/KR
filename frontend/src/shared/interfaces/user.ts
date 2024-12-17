@@ -1,4 +1,5 @@
 import Photo from "./photo";
+import { Subscription } from "./subscription";
 
 export interface User {
   id: string;
@@ -20,7 +21,7 @@ export interface RegisteredUser {
   lastName: string,
   age: number,
   gender: string,
-  subscriptionId: string
+  subscription: Subscription
   role: string,  
   password: string,
   description: string,

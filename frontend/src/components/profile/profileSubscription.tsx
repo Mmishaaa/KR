@@ -20,8 +20,8 @@ const ProfileSubscription: FC<ProfileSubscriptionProps> = ({ subscription }) => 
           <Box display="flex" alignItems="center" justifyContent="space-between">
             <Box>
               <Typography variant="h5" sx={{ mb: 1, fontWeight: "600" }}>Subscription</Typography>
-              <Typography>Type: {String(subscription.subscriptionType)}</Typography>
-              <Typography>Expires: {subscription.expiresAt && formatDate(subscription.expiresAt)}</Typography>
+              <Typography>Type: {String(subscription?.subscriptionType)}</Typography>
+              <Typography>Expires: {subscription?.expiresAt && formatDate(subscription?.expiresAt)}</Typography>
             </Box>
             <IconButton
               aria-label="manage subscription"

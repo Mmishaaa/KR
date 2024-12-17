@@ -165,6 +165,11 @@ class UserController {
             as: 'chats',
             attributes: ['id'],
           },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          }
         ],
       });
       if (!user) {
