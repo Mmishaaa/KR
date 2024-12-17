@@ -26,7 +26,7 @@ const generateJwt = (id, email, role) => {
 class UserController {
   async registartion(req, res, next) {
     try {
-      const { email, firstName, lastName, age, password, gender, role } = req.body;
+      const { email, password } = req.body;
 
       if(!email || !password) {
         return next(ApiError.badRequest("invalid password or email"))
@@ -51,12 +51,7 @@ class UserController {
 
       const newUser = await User.create({
         email,
-        firstName,
-        lastName,
-        age,
         password: hashedPassword,
-        gender,
-        role,
         subscriptionId: newSubscription.id
       });
 
@@ -65,7 +60,7 @@ class UserController {
       return res.status(201).json({newUser, jwt});
     }
     catch(error) {
-      next(ApiError.internal("Error while creating a user: " + error.message))
+      next(ApiError.internal("Error while creating a user: " + error))
     }    
   }
 
@@ -83,9 +78,23 @@ class UserController {
         return next(ApiError.badRequest("wrong password"))
       }
   
-      const token = generateJwt(user.id, user.email, user.role);
-      console.log(token)
-      return res.json({token})
+      var userWithoutPassword = getUserWithoutPasssword(user.toJSON());
+
+      const jwt = generateJwt(user.id, user.email, user.role);
+
+      return res.json({
+        newUser: userWithoutPassword,
+        jwt
+      })
+    }
+    catch(error) {
+      next(ApiError.internal("Error while login: " + error.message))
+    }    
+  }
+
+  async logout(req, res, next) {
+    try {
+      localStorage.removeItem("token")
     }
     catch(error) {
       next(ApiError.internal("Error while login: " + error.message))
@@ -94,7 +103,8 @@ class UserController {
 
   async check(req, res) {
     const token = generateJwt(req.user.id, req.user.email, req.user.role)
-    return res.json({token})
+
+    return res.json({userId: req.user.id, token})
   }
 
   async createAsync(req, res, next) {

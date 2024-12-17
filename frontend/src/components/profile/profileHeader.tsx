@@ -9,7 +9,7 @@ type ProfileHeaderProps = {
 };
 
 const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => {
-  const avatarPhotoURL = photos.find(photo => photo.isAvatar)?.photoURL;
+  const avatarPhotoURL = photos?.find(photo => photo.isAvatar)?.photoURL;
 
   const commonTypographyStyles = {
     overflow: 'hidden',

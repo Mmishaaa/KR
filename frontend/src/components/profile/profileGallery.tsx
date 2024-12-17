@@ -8,8 +8,8 @@ type ProfileHeaderProps = {
 }
 
 const ProfileGallery: FC<ProfileHeaderProps> = ({ photos }) => {
-  const photosToShow = photos.slice(0, 6) || [];
-  const hasMorePhotos = photos.length > photosToShow.length;
+  const photosToShow = photos?.slice(0, 6) || [];
+  const hasMorePhotos = photos?.length > photosToShow.length;
 
   return (
     <Box sx={{ mb: 3 }}>

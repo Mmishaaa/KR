@@ -1,14 +1,13 @@
 import { Box, Card, CardContent, Grid } from "@mui/material";
 import TextItem from "../../shared/UI/textItem.";
 import { FC } from "react";
-import { Gender } from "../../shared/enums/gender";
 
 type ProfileDescriptionProps = {
   description: string,
   city: string,
   age: number,
   email: string,
-  gender: Gender
+  gender: string
 } 
 
 const ProfileDescription: FC<ProfileDescriptionProps> = ({ description, city, age, email, gender }) => {
