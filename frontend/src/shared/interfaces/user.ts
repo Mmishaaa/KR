@@ -1,6 +1,4 @@
-import { Gender } from "../enums/gender";
 import Photo from "./photo";
-import { Subscription } from "./subscription";
 
 export interface User {
   id: string;
@@ -10,11 +8,38 @@ export interface User {
   age : number;
   city : string;
   description : string;
-  gender: Gender;
+  gender: string;
   email: string;
   photos: Photo[]
 };
 
-export interface UserWithSubscription extends User {
-  subscription: Subscription
-};
+export interface RegisteredUser {
+  id: string
+  email: string,
+  firstName: string,
+  lastName: string,
+  age: number,
+  gender: string,
+  subscriptionId: string
+  role: string,  
+  password: string,
+  description: string,
+  city: string,
+  photos: Photo[]
+}
+
+export interface RegistrationResponse {
+  newUser: RegisteredUser ,
+  jwt: string,
+  message: string
+}
+
+export interface UserAuthentication {
+  email: string;
+  password: string
+}
+
+export interface AuthCheckResult {
+  userId: string,
+  token: string
+}

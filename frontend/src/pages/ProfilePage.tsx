@@ -4,34 +4,24 @@ import GenericPage from "./GenericPage";
 import { FC, useEffect } from "react";
 import ProfileHeader from "../components/profile/profileHeader";
 import { Box, Container, Typography } from '@mui/material';
-import { UserWithSubscription } from '../shared/interfaces/user';
 import ProfileDescription from '../components/profile/profileDescription';
 import ProfileGallery from '../components/profile/profileGallery';
-import ProfileSubscription from '../components/profile/profileSubscription';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../state/store';
-import { fetchUserFailure, fetchUserStart, fetchUserSuccess } from '../../state/user/userSlice';
+import { AppDispatch, RootState } from '../../state/store';
+import { useParams } from 'react-router-dom';
+import { fetchUserById } from '../../state/user/userSlice';
 
 const ProfilePage: FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { id } = useParams<{ id: string }>();
   const { user, isLoading, error } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      dispatch(fetchUserStart());
-      try {
-        const response = await fetch("http://localhost:5000/api/users/1");
-        const userData: UserWithSubscription = await response.json();
-        
-        dispatch(fetchUserSuccess(userData))
-      } catch(error) {
-        dispatch(fetchUserFailure("Failed to load user data"))
-      }
-    };
-
-    fetchUser();
-  }, [dispatch])
+    if (id) {
+      dispatch(fetchUserById(id));
+    }
+  }, [id, dispatch])
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
@@ -55,7 +45,7 @@ const ProfilePage: FC = () => {
             <ProfileHeader firstName={user.firstName} email={user.email} photos={user.photos} />
             <ProfileGallery photos={user.photos} />
             <ProfileDescription description={user.description} city={user.city} age={user.age} email={user.email} gender={user.gender} />
-            <ProfileSubscription subscription={user.subscription}/>
+            {/* <ProfileSubscription subscription={user.subscription}/> */}
           </Box>
       </Container>
     </GenericPage>

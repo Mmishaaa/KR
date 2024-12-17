@@ -17,6 +17,7 @@ type SuccessResponse<V> = {
 type ErrorResponse<E = AxiosError> = {
   code: "error";
   error: E;
+  data?: any; 
 };
 
 type BaseResponse<V, E> = SuccessResponse<V> | ErrorResponse<E>;
@@ -27,7 +28,7 @@ export const HttpRequest = async <V, E = AxiosError>({
   item = {},
   id = "",
 }: Props): Promise<BaseResponse<V, E>> => {
-  let res: AxiosResponse<V>;
+  let res: AxiosResponse<V, unknown>;
   try {
     switch (method) {
       case RESTMethod.Get:
@@ -43,16 +44,30 @@ export const HttpRequest = async <V, E = AxiosError>({
         res = await client.put<V>(uri + "/" + id, item);
         break;
       default:
-        throw "Bad request";
+        throw new Error("Bad request");
     }
+
     if (res.status >= 400) {
       return {
         code: "error",
         error: new Error(`Request failed with status ${res.status}`) as E,
+        data: res.data,  
       };
     }
+
     return { code: "success", data: res.data };
-  } catch (error) {
-    return { code: "error", error: error as E };
+  } catch (error: any) {
+    if (error.response) {
+      return {
+        code: "error",
+        error: error as E,
+        data: error.response.data, 
+      };
+    }
+    return {
+      code: "error",
+      error: error as E,
+      data: null,  
+    };
   }
 };
