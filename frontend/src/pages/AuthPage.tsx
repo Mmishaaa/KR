@@ -27,13 +27,12 @@ const AuthPage: FC = () => {
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isRegistrationAttempted, setIsRegistrationAttempted] = useState(false); // Track registration attempt
+  const [isRegistrationAttempted, setIsRegistrationAttempted] = useState(false); 
 
   useEffect(() => {
     const isAuthPage = location.pathname === "/login";
     setIsLogin(isAuthPage);
 
-    // Display error snackbar only if the registration has been attempted and there's an error message
     if (isRegistrationAttempted && errorMessage) {
       setOpenErrorSnackbar(true);
     }
@@ -107,10 +106,8 @@ const AuthPage: FC = () => {
       password: formData.password,
     };
 
-    // Mark that registration was attempted
     setIsRegistrationAttempted(true);
 
-    // Trigger registration or login based on the form state
     isLogin
       ? dispatch(login(userAuthenticationData, navigate))
       : dispatch(register({ ...formData }, navigate));
@@ -125,10 +122,9 @@ const AuthPage: FC = () => {
     }
   };
 
-  // Close the Snackbar and clear the error message
   const handleCloseErrorSnackbar = () => {
     setOpenErrorSnackbar(false);
-    setIsRegistrationAttempted(false); // Reset registration attempt status
+    setIsRegistrationAttempted(false);
   };
 
   return (

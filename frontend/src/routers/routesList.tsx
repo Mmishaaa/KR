@@ -4,7 +4,7 @@ import NearPage from "../pages/NearPage";
 import ProfilePage from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import HitOrMissPage from "../pages/HitOrMissPage";
-import AuthPage from '../pages/Auth';
+import AuthPage from '../pages/AuthPage';
 
 interface RouterType {
   title: string;
