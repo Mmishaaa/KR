@@ -11,20 +11,21 @@ dotenv.config();
 
 const { User, Subscription, Photo, Chat} = models;
 
+
 const generateJwt = (id, email, role) => {
   if (!process.env.SECRET_KEY) {
     return ApiError.badRequest("SECRET_KEY is not defined in environment variables")
   }
-
+  
   return jwt.sign(
     { id, email, role }, 
     process.env.SECRET_KEY, 
     { expiresIn: "24h" }
-  );
-}
-
-class UserController {
-  async registartion(req, res, next) {
+    );
+  }
+  
+  class UserController {
+    async registartion(req, res, next) {
     try {
       const { email, password } = req.body;
 
@@ -95,6 +96,7 @@ class UserController {
   async logout(req, res, next) {
     try {
       localStorage.removeItem("token")
+
     }
     catch(error) {
       next(ApiError.internal("Error while login: " + error.message))
@@ -104,7 +106,7 @@ class UserController {
   async check(req, res) {
     const token = generateJwt(req.user.id, req.user.email, req.user.role)
 
-    return res.json({userId: req.user.id, token})
+    return res.json({user: req.user, token})
   }
 
   async createAsync(req, res, next) {

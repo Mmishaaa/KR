@@ -14,6 +14,20 @@ export interface User {
   photos: Photo[]
 };
 
+export interface UserViewModel {
+  email: string,
+  firstName: string,
+  lastName: string,
+  age: number,
+  gender: string,
+  subscription: Subscription
+  role: string,  
+  password: string,
+  description: string,
+  city: string,
+  photos: Photo[]
+}
+
 export interface RegisteredUser {
   id: string
   email: string,
@@ -41,6 +55,6 @@ export interface UserAuthentication {
 }
 
 export interface AuthCheckResult {
-  userId: string,
+  user: RegisteredUser,
   token: string
 }
