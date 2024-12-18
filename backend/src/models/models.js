@@ -6,6 +6,7 @@ const User = mySequelize.define("user", {
   email: { type: DataTypes.STRING, unique: true },
   firstName: { type: DataTypes.STRING },
   lastName: { type: DataTypes.STRING },
+  description: { type: DataTypes.STRING },
   age: { type: DataTypes.INTEGER },
   password: { type: DataTypes.STRING },
   gender: { type: DataTypes.ENUM("NonSpecified", "Male", "Female", "Other"), allowNull: false, defaultValue: "NonSpecified" },

@@ -27,7 +27,7 @@ const generateJwt = (id, email, role) => {
   class UserController {
     async registartion(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, age, firstName, lastName, gender } = req.body;
 
       if(!email || !password) {
         return next(ApiError.badRequest("invalid password or email"))
@@ -51,7 +51,11 @@ const generateJwt = (id, email, role) => {
       });
 
       const newUser = await User.create({
+        firstName,
+        lastName,
         email,
+        age,
+        gender,
         password: hashedPassword,
         subscriptionId: newSubscription.id
       });
@@ -171,6 +175,11 @@ const generateJwt = (id, email, role) => {
             model: Subscription,  
             as: 'subscription',  
             attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          },
+          {
+            model: Photo,  
+            as: 'photos',  
+            attributes: ['id', 'photoURL', 'isAvatar'], 
           }
         ],
       });

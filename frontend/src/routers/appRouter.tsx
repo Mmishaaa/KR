@@ -12,6 +12,7 @@ interface RouteProps {
 
 const AppRouter: FC = () => {
   const isAuth = useSelector((state: RootState) => state.user.isAuth) 
+  const userId = useSelector((state: RootState) => state.user.user?.id) 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const AppRouter: FC = () => {
       navigate("/registration");
     }
     else {
-      navigate("/chats")
+      navigate(`/profiles/${userId}`)
     }
   }, [isAuth]);
 
