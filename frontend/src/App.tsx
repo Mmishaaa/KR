@@ -10,7 +10,6 @@ function App() {
 
   useEffect(() => {
     dispatch(check()).then((data: boolean) => {
-      console.log(data)
       dispatch(setIsAuth(data));
     });
   }, [dispatch]);

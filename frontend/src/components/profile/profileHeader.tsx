@@ -30,7 +30,7 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => 
               mr: { xs: 0, sm: 2 },
               mb: { xs: 2, sm: 0 },
             }}
-            src={avatarPhotoURL}
+            src={import.meta.env.VITE_PLANE_API_URI + avatarPhotoURL}
           />
         </Grid>
         <Grid item xs={12} sm={9} container direction="column" alignItems="center">

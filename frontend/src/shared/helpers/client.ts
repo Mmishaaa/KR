@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 export const client = axios.create({
-  baseURL: import.meta.env.BASE_API_URI || "http://localhost:7000/api",
+  baseURL: import.meta.env.VITE_BASE_API_URI || "http://localhost:7000/api",
 });
 
 const authInterceptor = (config: InternalAxiosRequestConfig) => {

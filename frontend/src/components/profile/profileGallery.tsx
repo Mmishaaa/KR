@@ -47,7 +47,7 @@ const ProfileGallery: FC<ProfileHeaderProps> = ({ photos }) => {
           <Card sx={{ position: 'relative', paddingBottom: '100%', borderRadius: 5 }}>
             <CardMedia
               component="img"
-              image={photo.photoURL}
+              image={import.meta.env.VITE_PLANE_API_URI + photo.photoURL}
               alt={`Photo ${index + 1}`}
               sx={{
                 position: 'absolute',
