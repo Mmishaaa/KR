@@ -1,9 +1,9 @@
 import { createSlice, Dispatch, PayloadAction, ThunkAction } from '@reduxjs/toolkit';
-import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult } from "../../src/shared/interfaces/user"
+import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel, UserViewModelToUpdate, ShortUserViewModelToUpdate } from "../../src/shared/interfaces/user"
 import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
 import { RootState } from '../store';
-import { json } from 'react-router-dom';
+import { setPhoto } from '../photo/photoSlice';
 
 export interface UserState {
   user: RegisteredUser | null
@@ -36,17 +36,18 @@ const userSlice = createSlice({
     },
     updateUser(state, action: PayloadAction<RegisteredUser>) {
       state.user = action.payload;
+      console.log("state.user: " + JSON.stringify(state.user))
     },
     setIsAuth(state, action: PayloadAction<boolean>) {
       state.isAuth = action.payload;
     },
-    setUserId(state, action: PayloadAction<string>) {
-      state.user!.id = action.payload
+    setUser(state, action: PayloadAction<RegisteredUser | null>) {
+      state.user = action.payload
     }
   }
 });
 
-export const { fetchStart, fetchFailure, fetchSuccess, updateUser, setIsAuth, setUserId } = userSlice.actions;
+export const { fetchStart, fetchFailure, fetchSuccess, updateUser, setIsAuth, setUser } = userSlice.actions;
 
 export const register = (
   user: UserAuthentication,
@@ -94,6 +95,7 @@ export const login = (
     if (res?.code === "success") {
       dispatch(updateUser(res.data.newUser));
       dispatch(setIsAuth(true));
+      localStorage.setItem("token", res.data.jwt)
       
       navigate(`/profiles/${res.data.newUser.id}`);   
 
@@ -119,7 +121,7 @@ export const fetchUserById = (
     
     if (res?.code === "success") {
       dispatch(updateUser(res.data));    
-
+      dispatch(setPhoto(res.data.photos))
       dispatch(fetchSuccess());
     } else {
       dispatch(fetchFailure("Login failed"));
@@ -134,18 +136,19 @@ export const check = (
   try {
     dispatch(fetchStart());
 
-    const res = await HttpRequest<AuthCheckResult>({
-      uri: `/users/auth`,
-      method: RESTMethod.Get,
-    });
+      const res = await HttpRequest<AuthCheckResult>({
+        uri: `/users/auth`,
+        method: RESTMethod.Get,
+      });
     
     if (res?.code === "success") {
+      localStorage.setItem("token", res.data.token)
+
       dispatch(setIsAuth(true));
       
       dispatch(fetchSuccess());
       
-      dispatch(setUserId(res.data.userId))
-
+      dispatch(setUser(res.data.user))
       return true;
     } else {
       dispatch(fetchFailure("Login failed"));
@@ -154,6 +157,32 @@ export const check = (
   } catch (error: any) {
     dispatch(fetchFailure(error.message || "An error occurred"));
     return false;
+  }
+};
+
+export const updateUserAsync = (
+  id: string,
+  user: UserViewModelToUpdate | ShortUserViewModelToUpdate,
+): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {
+  try {
+    dispatch(fetchStart());
+    console.log(JSON.stringify(user))
+    const res = await HttpRequest<RegisteredUser>({
+      uri: `/users/${id}`,
+      method: RESTMethod.Put,
+      item: user,
+    });
+
+    if (res?.code === "success") {
+      console.log(JSON.stringify(res.data))
+      dispatch(updateUser(res.data));
+      
+      dispatch(fetchSuccess());
+    } else {
+      dispatch(fetchFailure("Updating failed" + JSON.stringify(res.data)));
+    }
+  } catch (error: any) {
+    dispatch(fetchFailure(error.payload || "An error occurred"));
   }
 };
 

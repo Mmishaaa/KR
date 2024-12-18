@@ -1,4 +1,5 @@
 import Photo from "./photo";
+import { Subscription } from "./subscription";
 
 export interface User {
   id: string;
@@ -13,6 +14,32 @@ export interface User {
   photos: Photo[]
 };
 
+export interface UserViewModel {
+  email: string,
+  firstName: string,
+  lastName: string,
+  age: number,
+  gender: string,
+  subscription: Subscription
+  role: string,  
+  password: string,
+  description: string,
+  city: string,
+  photos: Photo[]
+}
+
+export interface UserViewModelToUpdate {
+  age: number,
+  gender: string,
+  description: string,
+  city: string,
+}
+
+export interface ShortUserViewModelToUpdate {
+  firstName: string,
+  lastName: string,
+}
+
 export interface RegisteredUser {
   id: string
   email: string,
@@ -20,7 +47,7 @@ export interface RegisteredUser {
   lastName: string,
   age: number,
   gender: string,
-  subscriptionId: string
+  subscription: Subscription
   role: string,  
   password: string,
   description: string,
@@ -40,6 +67,6 @@ export interface UserAuthentication {
 }
 
 export interface AuthCheckResult {
-  userId: string,
+  user: RegisteredUser,
   token: string
 }

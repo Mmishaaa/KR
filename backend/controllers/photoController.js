@@ -1,3 +1,4 @@
+import fs from 'fs'; 
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { models } from "../src/models/models.js"
@@ -6,28 +7,41 @@ import { v4 as uuidv4 } from 'uuid';
 const { Photo } = models;
 
 class PhotoController {
+
   async createAsync(req, res) {
-    const {userId, isAvatar } = req.body
+    const { userId, isAvatar } = req.body;
     const { img } = req.files;
-
-    let fileName = uuidv4() + ".jpg"
-
+  
+    let fileName = uuidv4() + ".jpg";
+  
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-
-    img.mv(path.resolve(__dirname, '..', 'static', fileName))
-
-    const currentUtc = new Date()
-
+  
+    img.mv(path.resolve(__dirname, '..', 'static', fileName));
+  
+    const currentUtc = new Date();
+  
+    if (isAvatar) {
+      await Photo.update(
+        { isAvatar: false },
+        { where: { userId: userId, isAvatar: true } }
+      );
+    }
+  
     const photo = await Photo.create({
       photoURL: fileName,
       isAvatar: isAvatar || false,
       userId: userId,
       createdAt: currentUtc,
-      updatedAt: currentUtc
-    })
-
-    return photo
+      updatedAt: currentUtc,
+    });
+  
+    return res.status(200).json({
+      id: photo.id,
+      isAvatar: photo.isAvatar,
+      photoURL: photo.photoURL,
+      userId: photo.userId,
+    });
   }
   
   async deleteAsync(req, res) {
@@ -36,9 +50,19 @@ class PhotoController {
   
       const photo = await Photo.findByPk(id);
       if (!photo) {
-        return res.status(404).json({ message: "Photo not found" });
+        return res.status(200).json({ message: "Photo has already been deleted successfully before" });
       }
   
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      const filePath = path.resolve(__dirname, '..', 'static', photo.photoURL);
+
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error(`Error deleting file ${filePath}:`, err);
+        }
+      });
+
       await photo.destroy();
       return res.status(200).json({ message: "Photo deleted successfully" });
     } catch (error) {

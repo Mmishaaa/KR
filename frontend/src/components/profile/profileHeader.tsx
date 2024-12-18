@@ -1,15 +1,19 @@
-import { FC } from "react";
-import { Box, Grid, Avatar, Typography } from "@mui/material";
-import Photo from "../../shared/interfaces/photo";
+import { FC, useState } from "react";
+import { Box, Grid, Avatar, Typography, IconButton, TextField, Button } from "@mui/material";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../../state/store";
+import { updateUserAsync } from "../../../state/user/userSlice";
 
-type ProfileHeaderProps = {
-  firstName: string;
-  email: string;
-  photos: Photo[];
-};
+const ProfileHeader: FC = () => {
+  const user = useSelector((state: RootState) => state.user.user);
+  const dispatch = useDispatch<AppDispatch>();
 
-const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => {
-  const avatarPhotoURL = photos?.find(photo => photo.isAvatar)?.photoURL;
+  const avatar = useSelector((state: RootState) => state.photo.photos?.filter(photo => photo.isAvatar === true)[0]);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [firstName, setFirstName] = useState(user?.firstName || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
 
   const commonTypographyStyles = {
     overflow: 'hidden',
@@ -19,8 +23,19 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => 
     textAlign: { xs: 'center', sm: 'left' },
   };
 
+  const handleEditClick = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSave = () => {
+    if(user) {
+      dispatch(updateUserAsync( user?.id, { firstName, lastName} ));
+      setIsEditing(false);
+    }
+  };
+
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 3, position: 'relative' }}>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
         <Grid item xs={12} sm={3} container justifyContent={{ xs: 'center', sm: 'flex-start' }}>
           <Avatar
@@ -30,18 +45,53 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => 
               mr: { xs: 0, sm: 2 },
               mb: { xs: 2, sm: 0 },
             }}
-            src={avatarPhotoURL}
+            src={import.meta.env.VITE_PLANE_API_URI + avatar?.photoURL}
           />
         </Grid>
         <Grid item xs={12} sm={9} container direction="column" alignItems="center">
-          <Typography variant="h5" sx={{ ...commonTypographyStyles, fontWeight: 'bold' }}>
-            {firstName}
-          </Typography>
-          <Typography color="textSecondary" sx={commonTypographyStyles}>
-            {email}
-          </Typography>
+          {isEditing ? (
+            <>
+              <TextField
+                label="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                fullWidth
+                sx={{ mb: 1 }}
+              />
+              <TextField
+                label="Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                fullWidth
+                sx={{ mb: 1 }}
+              />
+              <Button variant="contained" color="primary" onClick={handleSave}>
+                Save
+              </Button>
+            </>
+          ) : (
+            <>
+              <Typography variant="h5" sx={{ ...commonTypographyStyles, fontWeight: 'bold' }}>
+                {firstName} {lastName}
+              </Typography>
+              <Typography color="textSecondary" sx={commonTypographyStyles}>
+                {user?.email}
+              </Typography>
+            </>
+          )}
         </Grid>
       </Grid>
+      <IconButton
+        aria-label="edit profile"
+        sx={{
+          position: "absolute",
+          top: 16,
+          right: 16,
+        }}
+        onClick={handleEditClick}
+      >
+        <CreateOutlinedIcon />
+      </IconButton>
     </Box>
   );
 };

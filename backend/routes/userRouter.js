@@ -8,8 +8,6 @@ userRouter.post("/registration", userController.registartion)
 
 userRouter.post("/login", userController.login)
 
-userRouter.post("/logout", userController.logout)
-
 userRouter.get("/auth", authMiddleware, userController.check)
 
 userRouter.post("/", userController.createAsync)

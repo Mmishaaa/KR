@@ -13,7 +13,7 @@ export default (req, res, next) => {
     if(!token) {
       res.status(401).json({message: "Unauthorized"})
     }
-
+    
     const decoded = jwt.verify(token, process.env.SECRET_KEY)
     req.user = decoded
     next()

@@ -11,22 +11,23 @@ dotenv.config();
 
 const { User, Subscription, Photo, Chat} = models;
 
+
 const generateJwt = (id, email, role) => {
   if (!process.env.SECRET_KEY) {
     return ApiError.badRequest("SECRET_KEY is not defined in environment variables")
   }
-
+  
   return jwt.sign(
     { id, email, role }, 
     process.env.SECRET_KEY, 
     { expiresIn: "24h" }
-  );
-}
-
-class UserController {
-  async registartion(req, res, next) {
+    );
+  }
+  
+  class UserController {
+    async registartion(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, age, firstName, lastName, gender } = req.body;
 
       if(!email || !password) {
         return next(ApiError.badRequest("invalid password or email"))
@@ -50,7 +51,11 @@ class UserController {
       });
 
       const newUser = await User.create({
+        firstName,
+        lastName,
         email,
+        age,
+        gender,
         password: hashedPassword,
         subscriptionId: newSubscription.id
       });
@@ -95,6 +100,7 @@ class UserController {
   async logout(req, res, next) {
     try {
       localStorage.removeItem("token")
+
     }
     catch(error) {
       next(ApiError.internal("Error while login: " + error.message))
@@ -104,7 +110,7 @@ class UserController {
   async check(req, res) {
     const token = generateJwt(req.user.id, req.user.email, req.user.role)
 
-    return res.json({userId: req.user.id, token})
+    return res.json({user: req.user, token})
   }
 
   async createAsync(req, res, next) {
@@ -165,13 +171,25 @@ class UserController {
             as: 'chats',
             attributes: ['id'],
           },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          },
+          {
+            model: Photo,  
+            as: 'photos',  
+            attributes: ['id', 'photoURL', 'isAvatar', ], 
+          }
         ],
       });
       if (!user) {
         throw new ApiError(404, "User not found");
       }
   
-      return res.status(200).json(user);
+      var userWithoutPassword = getUserWithoutPasssword(user.toJSON())
+
+      return res.status(200).json(userWithoutPassword);
     }
     catch(error) {
       next(ApiError.internal("Error while retrieving a user: " + error.message))
@@ -208,7 +226,7 @@ class UserController {
   async updateAsync(req, res, next) {
       try {
         const { id } = req.params;
-        const { email, firstName, lastName, age, password, gender, subscriptionId, role, isAvatar } = req.body
+        const { email, firstName, lastName, age, description, city, password, gender, subscriptionId, role, isAvatar } = req.body
         
         if(req.files) {
           const { img } = req.files;
@@ -233,7 +251,13 @@ class UserController {
           }
         }
 
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(id, {
+          include: [{
+            model: Subscription,
+            as: 'subscription',
+            required: false,
+          }]
+        });
         if (!user) {
           throw new ApiError(404, "User not found");
         }
@@ -243,6 +267,8 @@ class UserController {
         user.lastName = lastName || user.lastName;
         user.age = age || user.age;
         user.password = password || user.password;
+        user.description = description || user.description
+        user.city = city || user.city
         user.gender = gender || user.gender;
         user.subscriptionId = subscriptionId || user.subscriptionId;
         user.role = role || user.role;

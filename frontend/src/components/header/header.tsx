@@ -3,9 +3,10 @@ import SupervisorAccountOutlinedIcon from '@mui/icons-material/SupervisorAccount
 import HowToRegOutlinedIcon from '@mui/icons-material/HowToRegOutlined';
 import ExitToAppOutlinedIcon from '@mui/icons-material/ExitToAppOutlined';
 import { FC, ReactElement } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../state/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../state/store";
 import { useNavigate } from "react-router-dom";
+import { setIsAuth, setUser } from "../../../state/user/userSlice";
 
 interface HeaderProps {
   title: string,
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ title, icons }) => {
   const isAuth = useSelector((state: RootState) => state.user.isAuth); 
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   
   const handleAuthClick = () => {
@@ -22,6 +24,8 @@ const Header: FC<HeaderProps> = ({ title, icons }) => {
 
   const handlelogout = async() => {
     localStorage.removeItem("token")
+    dispatch(setIsAuth(false))
+    dispatch(setUser(null))
     navigate("/login");
   }
 
