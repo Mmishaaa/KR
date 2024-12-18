@@ -187,7 +187,9 @@ const generateJwt = (id, email, role) => {
         throw new ApiError(404, "User not found");
       }
   
-      return res.status(200).json(user);
+      var userWithoutPassword = getUserWithoutPasssword(user.toJSON())
+
+      return res.status(200).json(userWithoutPassword);
     }
     catch(error) {
       next(ApiError.internal("Error while retrieving a user: " + error.message))
