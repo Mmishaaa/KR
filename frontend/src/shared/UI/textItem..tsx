@@ -3,7 +3,7 @@ import { FC } from "react";
 
 type TextItemProps = {
   title: string,
-  content: string | number,
+  content: string | number | undefined,
   noEllipsis?: boolean
 }
 

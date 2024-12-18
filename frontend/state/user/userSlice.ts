@@ -1,9 +1,8 @@
 import { createSlice, Dispatch, PayloadAction, ThunkAction } from '@reduxjs/toolkit';
-import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel } from "../../src/shared/interfaces/user"
+import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel, UserViewModelToUpdate } from "../../src/shared/interfaces/user"
 import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
-import { AppDispatch, RootState } from '../store';
-import { useDispatch } from 'react-redux';
+import { RootState } from '../store';
 import { setPhoto } from '../photo/photoSlice';
 
 export interface UserState {
@@ -37,6 +36,7 @@ const userSlice = createSlice({
     },
     updateUser(state, action: PayloadAction<RegisteredUser>) {
       state.user = action.payload;
+      console.log("state.user: " + JSON.stringify(state.user))
     },
     setIsAuth(state, action: PayloadAction<boolean>) {
       state.isAuth = action.payload;
@@ -162,11 +162,11 @@ export const check = (
 
 export const updateUserAsync = (
   id: string,
-  user: UserViewModel,
+  user: UserViewModelToUpdate,
 ): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {
   try {
     dispatch(fetchStart());
-
+    console.log(JSON.stringify(user))
     const res = await HttpRequest<RegisteredUser>({
       uri: `/users/${id}`,
       method: RESTMethod.Put,
@@ -174,6 +174,7 @@ export const updateUserAsync = (
     });
 
     if (res?.code === "success") {
+      console.log(JSON.stringify(res.data))
       dispatch(updateUser(res.data));
       
       dispatch(fetchSuccess());

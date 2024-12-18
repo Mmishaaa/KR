@@ -28,6 +28,13 @@ export interface UserViewModel {
   photos: Photo[]
 }
 
+export interface UserViewModelToUpdate {
+  age: number,
+  gender: string,
+  description: string,
+  city: string,
+}
+
 export interface RegisteredUser {
   id: string
   email: string,

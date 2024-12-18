@@ -43,10 +43,10 @@ const ProfilePage: FC = () => {
             padding: 0
         }}}>
           <Box sx={{ backgroundColor: '#fff', padding: 2, borderRadius: "24px", boxShadow: 3 }}>
-            <ProfileHeader firstName={user.firstName} email={user.email} photos={user.photos} />
-            <ProfileGallery photos={user.photos} />
-            <ProfileDescription description={user.description} city={user.city} age={user.age} email={user.email} gender={user.gender} />
-            <ProfileSubscription subscription={user.subscription}/>
+            <ProfileHeader />
+            <ProfileGallery />
+            <ProfileDescription />
+            <ProfileSubscription />
           </Box>
       </Container>
     </GenericPage>

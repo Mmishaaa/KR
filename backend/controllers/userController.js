@@ -226,7 +226,7 @@ const generateJwt = (id, email, role) => {
   async updateAsync(req, res, next) {
       try {
         const { id } = req.params;
-        const { email, firstName, lastName, age, password, gender, subscriptionId, role, isAvatar } = req.body
+        const { email, firstName, lastName, age, description, city, password, gender, subscriptionId, role, isAvatar } = req.body
         
         if(req.files) {
           const { img } = req.files;
@@ -251,7 +251,13 @@ const generateJwt = (id, email, role) => {
           }
         }
 
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(id, {
+          include: [{
+            model: Subscription,
+            as: 'subscription',
+            required: false,
+          }]
+        });
         if (!user) {
           throw new ApiError(404, "User not found");
         }
@@ -261,6 +267,8 @@ const generateJwt = (id, email, role) => {
         user.lastName = lastName || user.lastName;
         user.age = age || user.age;
         user.password = password || user.password;
+        user.description = description || user.description
+        user.city = city || user.city
         user.gender = gender || user.gender;
         user.subscriptionId = subscriptionId || user.subscriptionId;
         user.role = role || user.role;
