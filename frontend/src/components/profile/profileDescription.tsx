@@ -15,7 +15,6 @@ const ProfileDescription: FC = () => {
     description: user?.description || "",
     city: user?.city || "",
     age: user?.age || 0,
-    email: user?.email || "",
     gender: user?.gender || "",
   });
 
@@ -35,7 +34,6 @@ const ProfileDescription: FC = () => {
       description: user?.description || "",
       city: user?.city || "",
       age: user?.age || 0,
-      email: user?.email || "",
       gender: user?.gender || "NonSpecified",
     });
     setEditMode(false);
@@ -82,16 +80,10 @@ const ProfileDescription: FC = () => {
                     value={formData.age}
                     onChange={(e) => handleInputChange("age", e.target.value)}
                     fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Email"
-                    value={formData.email}
-                    InputProps={{
-                      readOnly: true,
+                    inputProps={{
+                      min: 1, 
+                      max: 100,
                     }}
-                    fullWidth
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -124,7 +116,6 @@ const ProfileDescription: FC = () => {
                 <TextItem title="Some things people should know about you" content={user?.description} noEllipsis />
                 <TextItem title="Where do you live?" content={user?.city} />
                 <TextItem title="How old are you?" content={user?.age} />
-                <TextItem title="What is your email?" content={user?.email} />
                 <TextItem title="What is your gender?" content={user?.gender} />
               </>
             )}

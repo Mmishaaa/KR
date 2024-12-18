@@ -35,6 +35,11 @@ export interface UserViewModelToUpdate {
   city: string,
 }
 
+export interface ShortUserViewModelToUpdate {
+  firstName: string,
+  lastName: string,
+}
+
 export interface RegisteredUser {
   id: string
   email: string,

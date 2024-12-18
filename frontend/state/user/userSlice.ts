@@ -1,5 +1,5 @@
 import { createSlice, Dispatch, PayloadAction, ThunkAction } from '@reduxjs/toolkit';
-import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel, UserViewModelToUpdate } from "../../src/shared/interfaces/user"
+import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel, UserViewModelToUpdate, ShortUserViewModelToUpdate } from "../../src/shared/interfaces/user"
 import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
 import { RootState } from '../store';
@@ -162,7 +162,7 @@ export const check = (
 
 export const updateUserAsync = (
   id: string,
-  user: UserViewModelToUpdate,
+  user: UserViewModelToUpdate | ShortUserViewModelToUpdate,
 ): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {
   try {
     dispatch(fetchStart());
