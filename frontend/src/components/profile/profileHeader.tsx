@@ -1,15 +1,12 @@
 import { FC } from "react";
 import { Box, Grid, Avatar, Typography } from "@mui/material";
-import Photo from "../../shared/interfaces/photo";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../state/store";
 
-type ProfileHeaderProps = {
-  firstName: string;
-  email: string;
-  photos: Photo[];
-};
+const ProfileHeader: FC = () => {
+  const user = useSelector((state: RootState) => state.user.user);
 
-const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => {
-  const avatarPhotoURL = photos?.find(photo => photo.isAvatar)?.photoURL;
+  const avatar = useSelector((state: RootState) => state.photo.photos?.filter(photo => photo.isAvatar === true)[0]);
 
   const commonTypographyStyles = {
     overflow: 'hidden',
@@ -30,15 +27,15 @@ const ProfileHeader: FC<ProfileHeaderProps> = ({ firstName, email, photos }) => 
               mr: { xs: 0, sm: 2 },
               mb: { xs: 2, sm: 0 },
             }}
-            src={import.meta.env.VITE_PLANE_API_URI + avatarPhotoURL}
+            src={import.meta.env.VITE_PLANE_API_URI + avatar?.photoURL}
           />
         </Grid>
         <Grid item xs={12} sm={9} container direction="column" alignItems="center">
           <Typography variant="h5" sx={{ ...commonTypographyStyles, fontWeight: 'bold' }}>
-            {firstName}
+            {user?.firstName}
           </Typography>
           <Typography color="textSecondary" sx={commonTypographyStyles}>
-            {email}
+            {user?.email}
           </Typography>
         </Grid>
       </Grid>

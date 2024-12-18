@@ -179,7 +179,7 @@ const generateJwt = (id, email, role) => {
           {
             model: Photo,  
             as: 'photos',  
-            attributes: ['id', 'photoURL', 'isAvatar'], 
+            attributes: ['id', 'photoURL', 'isAvatar', ], 
           }
         ],
       });

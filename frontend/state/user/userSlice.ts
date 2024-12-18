@@ -2,8 +2,9 @@ import { createSlice, Dispatch, PayloadAction, ThunkAction } from '@reduxjs/tool
 import { RegistrationResponse, UserAuthentication, RegisteredUser, AuthCheckResult, UserViewModel } from "../../src/shared/interfaces/user"
 import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
-import { RootState } from '../store';
-import { json } from 'react-router-dom';
+import { AppDispatch, RootState } from '../store';
+import { useDispatch } from 'react-redux';
+import { setPhoto } from '../photo/photoSlice';
 
 export interface UserState {
   user: RegisteredUser | null
@@ -120,7 +121,7 @@ export const fetchUserById = (
     
     if (res?.code === "success") {
       dispatch(updateUser(res.data));    
-
+      dispatch(setPhoto(res.data.photos))
       dispatch(fetchSuccess());
     } else {
       dispatch(fetchFailure("Login failed"));
