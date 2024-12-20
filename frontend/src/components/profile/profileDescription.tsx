@@ -75,7 +75,7 @@ const ProfileDescription: FC = () => {
                 <Grid item xs={12}>
                   <TextField
                     label="Address"
-                    value={formData.city}
+                    value={coordinates?.name}
                     onChange={(e) => handleInputChange("city", e.target.value)}
                     fullWidth
                     InputProps={{
