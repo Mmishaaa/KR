@@ -200,7 +200,7 @@ const generateJwt = (id, email, role) => {
     try {
       let { limit, page } = req.query; 
 
-      limit = limit || 10;
+      limit = limit || 100;
       page = page || 1;
 
       let offset = page * limit - limit
@@ -213,6 +213,10 @@ const generateJwt = (id, email, role) => {
             model: Chat,
             as: 'chats',
             attributes: ['id'],
+          },
+          {
+            model: Photo,  
+            as: 'photos',  
           },
         ],
       });
