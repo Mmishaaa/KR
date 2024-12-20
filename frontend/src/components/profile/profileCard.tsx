@@ -3,19 +3,21 @@ import { FC } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Carousel from "../carousel/carousel";
-import { User } from "../../shared/interfaces/user";
 import ActionButton from "../buttons/actionButton";
+import { Profile } from "../../shared/interfaces/profiles";
 
 interface ProfileCardProps {
-  user: User;
+  profile: Profile;
   onNextProfile: () => void;
 }
 
-const ProfileCard: FC<ProfileCardProps> = ({ user, onNextProfile }) => {
+const ProfileCard: FC<ProfileCardProps> = ({ profile, onNextProfile }) => {
+  console.log("profile: " + profile.photos)
+
   return (
     <Card sx={{ borderRadius: 3, boxShadow: 3, overflow: "hidden" }}>
       <Box sx={{ position: "relative" }}>
-        <Carousel photos={user.photos} />
+        <Carousel photos={profile?.photos} />
       </Box>
       <CardContent sx={{
           display: "flex",
@@ -24,16 +26,16 @@ const ProfileCard: FC<ProfileCardProps> = ({ user, onNextProfile }) => {
         }
       }>
         <Typography variant="h5" component="div" gutterBottom>
-          {user.firstName} {user.lastName}
+          {profile.userName}
         </Typography>
         <Typography variant="subtitle1" color="text.secondary">
-          {user.city}
+          {profile.userLocation}
         </Typography>
         <Typography variant="body1" color="text.secondary" paragraph>
-          {user.description}
+          {profile.userDescription}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Age: {user.age}
+          Age: {profile.userAge}
         </Typography>
           <Box display="flex" gap={2} justifyContent="center">
             <ActionButton icon={<FavoriteIcon fontSize="large" />} onClick={onNextProfile} />
