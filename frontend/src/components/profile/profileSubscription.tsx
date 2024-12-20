@@ -9,8 +9,6 @@ const ProfileSubscription: FC = () => {
   const subscription = useSelector((state: RootState) => state.user.user?.subscription);
   const user = useSelector((state: RootState) => state.user.user);
 
-  console.log("subscription: " + subscription)
-  console.log("user: " + JSON.stringify(user))
   const formatDate = (dateString: Date) => {
     return moment(dateString).format('DD.MM.YYYY');
   };

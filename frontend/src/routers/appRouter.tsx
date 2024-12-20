@@ -16,12 +16,11 @@ const AppRouter: FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("isAuth: " + isAuth)
     if (!isAuth) {
       navigate("/registration");
     }
     else {
-      navigate(`/profiles/${userId}`)
+      navigate(`/chats`)
     }
   }, [isAuth]);
 

@@ -7,15 +7,23 @@ import { UserAuthentication } from "../shared/interfaces/user";
 import { AppDispatch } from "../../state/store";
 import { RootState } from "../../state/store";
 
+declare global {
+  interface ymaps {
+    Map: any;
+    GeoObject: any;
+    GeoObjectCollection: any;
+  }
+}
+
 const AuthPage: FC = () => {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const errorMessage = useSelector((state: RootState) => state.user.error);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -48,7 +56,7 @@ const AuthPage: FC = () => {
       ...errors,
       [e.target.name]: "",
     });
-  };
+  };  
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -211,6 +219,10 @@ const AuthPage: FC = () => {
                 margin="normal"
                 error={!!errors.age}
                 helperText={errors.age}
+                inputProps={{
+                  min: 0,
+                  max: 100,
+                }}
               />
               <TextField
                 label="Gender"

@@ -5,11 +5,13 @@ const coordinatesRouter = new Router();
 
 coordinatesRouter.post("/", coordinatesController.createAsync)
 
-coordinatesRouter.post("/:id", coordinatesController.getByIdAsync)
+coordinatesRouter.get("/:id", coordinatesController.getByIdAsync)
 
 coordinatesRouter.post("/", coordinatesController.getAllAsync)
 
-coordinatesRouter.get("/:id", coordinatesController.updateAsync)
+coordinatesRouter.put("/:id", coordinatesController.updateAsync)
+
+coordinatesRouter.get("/by-user/:userId", coordinatesController.getByUserId)
 
 coordinatesRouter.delete("/:id", coordinatesController.deleteAsync)
 

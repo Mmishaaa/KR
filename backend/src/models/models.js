@@ -52,7 +52,8 @@ const Coordinates = mySequelize.define('coordinates',{
   id: {type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
   name: {type: DataTypes.STRING, allowNull: false},
   lat: {type: DataTypes.FLOAT, allowNull: false},
-  lng: {type: DataTypes.FLOAT, allowNull: false}
+  lng: {type: DataTypes.FLOAT, allowNull: false},
+  userId: {type: DataTypes.STRING, allowNull: false}
 })
 
 // User Relationships
@@ -82,7 +83,8 @@ Like.belongsTo(User, { foreignKey: 'receiverId', as: 'receiverUser' });
 Photo.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // Coordinates Relationships
-Coordinates.belongsTo(User);
+User.hasOne(Coordinates, { foreignKey: 'userId', as: 'coordinates' });
+Coordinates.belongsTo(User, { foreignKey: 'userId' });
 
 export const models = {
   User,

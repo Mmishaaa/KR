@@ -6,7 +6,6 @@ export const client = axios.create({
 
 const authInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('token');
-  console.log(token)
   if (config.headers) {
     config.headers.authorization = `Bearer ${token}`;
   }
