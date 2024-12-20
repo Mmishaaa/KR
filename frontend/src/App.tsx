@@ -7,7 +7,7 @@ import { AppDispatch } from "../state/store";
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();
-
+  
   useEffect(() => {
     dispatch(check()).then((data: boolean) => {
       dispatch(setIsAuth(data));

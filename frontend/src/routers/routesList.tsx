@@ -5,6 +5,7 @@ import ProfilePage from "../pages/ProfilePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import HitOrMissPage from "../pages/HitOrMissPage";
 import AuthPage from '../pages/AuthPage';
+import MapPage from '../pages/MapPage';
 
 interface RouterType {
   title: string;
@@ -21,10 +22,11 @@ export const publicRoutes: RouterType[] = [
   { title: "NotFound", path: "*", element: <NotFoundPage /> },
   { title: "Login", path: "/login", element: <AuthPage /> },
   { title: "Registration", path: "/registration", element: <AuthPage /> },
-
+  { title: "Map", path: '/map', element: <MapPage /> },
 ]
 
 export const privateRoutes: RouterType[] = [
   ...publicRoutes,
   { title: "Admin", path: '/admin', element: <LikesPage /> },
+  
 ]

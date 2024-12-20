@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, IconButton, TextField, Button, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { Box, Card, CardContent, Grid, IconButton, TextField, Button, FormControl, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import TextItem from "../../shared/UI/textItem.";
 import { FC, useState } from "react";
@@ -8,6 +8,9 @@ import { updateUserAsync } from "../../../state/user/userSlice";
 
 const ProfileDescription: FC = () => {
   const user = useSelector((state: RootState) => state.user.user);
+  const coordinates = useSelector((state: RootState) => state.coordinates.coordinates);
+  const isCoordinatesLoading = useSelector((state: RootState) => state.coordinates.isLoading);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const [editMode, setEditMode] = useState(false);
@@ -23,21 +26,25 @@ const ProfileDescription: FC = () => {
   };
 
   const handleSave = () => {
-    if(user) {
-      dispatch(updateUserAsync(user?.id, formData));
-      setEditMode(false);      
+    if (user) {
+      dispatch(updateUserAsync(user.id, formData));
+      setEditMode(false);
     }
   };
 
   const handleCancel = () => {
     setFormData({
       description: user?.description || "",
-      city: user?.city || "",
+      city: coordinates?.name || user?.city || "",
       age: user?.age || 0,
       gender: user?.gender || "NonSpecified",
     });
     setEditMode(false);
   };
+
+  if (isCoordinatesLoading) {
+    return <Typography>Loading coordinates...</Typography>;
+  }
 
   return (
     <Box sx={{ mb: 3, position: "relative" }}>
@@ -67,10 +74,13 @@ const ProfileDescription: FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField
-                    label="City"
-                    value={formData.city}
+                    label="Address"
+                    value={coordinates?.name}
                     onChange={(e) => handleInputChange("city", e.target.value)}
                     fullWidth
+                    InputProps={{
+                      readOnly: true, 
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -81,7 +91,7 @@ const ProfileDescription: FC = () => {
                     onChange={(e) => handleInputChange("age", e.target.value)}
                     fullWidth
                     inputProps={{
-                      min: 1, 
+                      min: 1,
                       max: 100,
                     }}
                   />
@@ -114,7 +124,7 @@ const ProfileDescription: FC = () => {
             ) : (
               <>
                 <TextItem title="Some things people should know about you" content={user?.description} noEllipsis />
-                <TextItem title="Where do you live?" content={user?.city} />
+                <TextItem title="Where do you live?" content={coordinates?.name || user?.city || "Not available"} />
                 <TextItem title="How old are you?" content={user?.age} />
                 <TextItem title="What is your gender?" content={user?.gender} />
               </>

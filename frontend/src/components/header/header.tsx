@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../state/store";
 import { useNavigate } from "react-router-dom";
 import { setIsAuth, setUser } from "../../../state/user/userSlice";
+import { updateCoordinates } from "../../../state/coordinates/coordinatesSlice";
 
 interface HeaderProps {
   title: string,
@@ -26,6 +27,7 @@ const Header: FC<HeaderProps> = ({ title, icons }) => {
     localStorage.removeItem("token")
     dispatch(setIsAuth(false))
     dispatch(setUser(null))
+    dispatch(updateCoordinates(null))
     navigate("/login");
   }
 

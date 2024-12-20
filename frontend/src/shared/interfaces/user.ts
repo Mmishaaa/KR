@@ -52,7 +52,7 @@ export interface RegisteredUser {
   password: string,
   description: string,
   city: string,
-  photos: Photo[]
+  photos: Photo[],
 }
 
 export interface RegistrationResponse {
@@ -69,4 +69,11 @@ export interface UserAuthentication {
 export interface AuthCheckResult {
   user: RegisteredUser,
   token: string
+}
+
+export interface Coordinates {
+  name: string;
+  lat: number;
+  lng: number,
+  userId: string
 }
