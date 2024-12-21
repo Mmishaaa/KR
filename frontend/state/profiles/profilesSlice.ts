@@ -51,8 +51,6 @@ export const fetchAllProfiles = (
     });
     
     if (res?.code === "success") {
-      console.log("Response:", res);
-      console.log("Response Data:", res.data);
       const profiles: Profile[] = [];
 
       res.data.rows.forEach(user => {
@@ -62,14 +60,16 @@ export const fetchAllProfiles = (
           userDescription: user.description,
           userName: user.firstName + user.lastName,
           userLocation: "",
-          photos: user.photos
+          photos: user.photos,
+          sentLikes: user.sentLikes,
+          receivedLikes: user.receivedLikes
         })
       });
 
       dispatch(setProfiles(profiles));    
       dispatch(fetchSuccess());
     } else {
-      dispatch(fetchFailure("Login failed"));
+      dispatch(fetchFailure(res.data));
     }
   } catch (error: any) {
     dispatch(fetchFailure(error.message || "An error occurred"));
