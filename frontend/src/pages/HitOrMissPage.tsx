@@ -5,7 +5,7 @@ import { FC, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ProfileCard from "../components/profile/profileCard";
 import { AppDispatch, RootState } from "../../state/store";
-import { fetchAllProfiles } from "../../state/profiles/profilesSlice";
+import { fetchAllProfiles, setProfiles } from "../../state/profiles/profilesSlice";
 
 const HitOrMissPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,16 +29,21 @@ const HitOrMissPage: FC = () => {
   }
 
   if (!filteredProfiles || filteredProfiles.length === 0) {
-    return <Typography>No profiles found.</Typography>;
+    return <Typography variant="h6">You've seen all the profiles!</Typography>
   }
 
   const showNextProfile = () => {
     if (filteredProfiles.length > 0) {
+      
+      filteredProfiles.splice(currentIndex, 1);
+      dispatch(setProfiles(filteredProfiles))
+    
       if (currentIndex < filteredProfiles.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
         setCurrentIndex(0);
       }
+      
     } else {
       console.warn("Filtered profiles are empty");
     }
