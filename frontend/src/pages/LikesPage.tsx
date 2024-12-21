@@ -1,9 +1,37 @@
-import { Box, Typography, Grid, Card, CardContent, CardMedia, CircularProgress, Select, MenuItem, InputLabel, FormControl, Chip, SelectChangeEvent } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  CardMedia,
+  CircularProgress,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Chip,
+  SelectChangeEvent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import GenericPage from "./GenericPage";
 import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store";
 import { fetchAllProfiles } from "../../state/profiles/profilesSlice";
+
+interface Profile {
+  userId: string;
+  userName: string;
+  userLocation: string;
+  userDescription: string;
+  userAge: number;
+  photos: { photoURL: string; isAvatar: boolean }[];
+}
 
 const LikesPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,6 +52,7 @@ const LikesPage: FC = () => {
     .filter((profile) => profile);
 
   const [filter, setFilter] = useState<"sent" | "received" | "all">("all");
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     dispatch(fetchAllProfiles());
@@ -32,6 +61,14 @@ const LikesPage: FC = () => {
   const handleFilterChange = (event: SelectChangeEvent<"sent" | "received" | "all">) => {
     const value = event.target.value as "sent" | "received" | "all";
     setFilter(value);
+  };
+
+  const handleOpenProfile = (profile: Profile) => {
+    setSelectedProfile(profile);
+  };
+
+  const handleCloseProfile = () => {
+    setSelectedProfile(null);
   };
 
   if (isLoading) {
@@ -63,12 +100,19 @@ const LikesPage: FC = () => {
         {profilesToDisplay.length > 0 ? (
           <Grid container spacing={3}>
             {profilesToDisplay.map((profile) => (
-              <Grid item xs={12} sm={6} md={4} key={profile?.userId}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                key={profile?.userId}
+                onClick={() => handleOpenProfile(profile as Profile)}
+              >
                 <Card sx={{ display: "flex", flexDirection: "column", height: "100%", boxShadow: 3, borderRadius: 2 }}>
                   <CardMedia
                     component="img"
                     height="200"
-                    image={import.meta.env.VITE_PLANE_API_URI + (profile?.photos?.find((photo) => photo.isAvatar)?.photoURL || profile?.photos[0].photoURL || "/default-profile.jpg")}
+                    image={import.meta.env.VITE_PLANE_API_URI + (profile?.photos?.find((photo) => photo.isAvatar)?.photoURL || profile?.photos[0]?.photoURL || "/default-profile.jpg")}
                     alt={`${profile?.userName}`}
                     sx={{ objectFit: "cover", borderRadius: 2 }}
                   />
@@ -102,6 +146,40 @@ const LikesPage: FC = () => {
           </Box>
         )}
       </Box>
+
+      {/* Profile Modal */}
+      <Dialog open={!!selectedProfile} onClose={handleCloseProfile} fullWidth maxWidth="sm">
+        {selectedProfile && (
+          <>
+            <DialogTitle>{selectedProfile.userName}</DialogTitle>
+            <DialogContent>
+              <Typography variant="body1" gutterBottom>
+                <strong>Location:</strong> {selectedProfile.userLocation}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Age:</strong> {selectedProfile.userAge}
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                <strong>Description:</strong> {selectedProfile.userDescription}
+              </Typography>
+              <Grid container spacing={2} sx={{ marginTop: 2 }}>
+                {selectedProfile.photos.map((photo, index) => (
+                  <Grid item xs={6} key={index}>
+                    <img
+                      src={import.meta.env.VITE_PLANE_API_URI + photo.photoURL}
+                      alt={`Photo ${index + 1}`}
+                      style={{ width: "100%", borderRadius: "8px" }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseProfile} color="primary">Close</Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
     </GenericPage>
   );
 };

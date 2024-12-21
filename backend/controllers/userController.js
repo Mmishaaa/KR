@@ -9,7 +9,7 @@ import path from 'path';
 
 dotenv.config();
 
-const { User, Subscription, Photo, Chat, Like} = models;
+const { User, Subscription, Photo, Chat, Like, Coordinates} = models;
 
 
 const generateJwt = (id, email, role) => {
@@ -267,7 +267,12 @@ const generateJwt = (id, email, role) => {
             model: Like,
             as: 'receivedLikes',
             attributes: ['id', 'senderId'],
-          }
+          },
+          {
+            model: Coordinates, // Including Coordinates model
+            as: 'coordinates',  // Alias specified in the relationships
+            attributes: ['lat', 'lng', 'name'], // Specify the attributes you need
+          },
         ],
       });
       return res.status(200).json(users);

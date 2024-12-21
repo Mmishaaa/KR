@@ -59,7 +59,7 @@ export const fetchAllProfiles = (
           userAge: user.age,
           userDescription: user.description,
           userName: user.firstName + user.lastName,
-          userLocation: "",
+          userLocation: user.coordinates.name,
           photos: user.photos,
           sentLikes: user.sentLikes,
           receivedLikes: user.receivedLikes
