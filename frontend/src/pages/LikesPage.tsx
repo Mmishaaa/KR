@@ -147,39 +147,56 @@ const LikesPage: FC = () => {
         )}
       </Box>
 
-      {/* Profile Modal */}
       <Dialog open={!!selectedProfile} onClose={handleCloseProfile} fullWidth maxWidth="sm">
-        {selectedProfile && (
-          <>
-            <DialogTitle>{selectedProfile.userName}</DialogTitle>
-            <DialogContent>
-              <Typography variant="body1" gutterBottom>
-                <strong>Location:</strong> {selectedProfile.userLocation}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Age:</strong> {selectedProfile.userAge}
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                <strong>Description:</strong> {selectedProfile.userDescription}
-              </Typography>
-              <Grid container spacing={2} sx={{ marginTop: 2 }}>
-                {selectedProfile.photos.map((photo, index) => (
-                  <Grid item xs={6} key={index}>
-                    <img
-                      src={import.meta.env.VITE_PLANE_API_URI + photo.photoURL}
-                      alt={`Photo ${index + 1}`}
-                      style={{ width: "100%", borderRadius: "8px" }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseProfile} color="primary">Close</Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
+  {selectedProfile && (
+    <>
+      <DialogTitle>{selectedProfile.userName}</DialogTitle>
+      <DialogContent>
+        <Typography variant="body1" gutterBottom>
+          <strong>Location:</strong> {selectedProfile.userLocation}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          <strong>Age:</strong> {selectedProfile.userAge}
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          <strong>Description:</strong> {selectedProfile.userDescription}
+        </Typography>
+        <Grid container spacing={2} sx={{ marginTop: 2, display: 'flex', justifyContent: 'center' }}>
+          {selectedProfile.photos.map((photo, index) => (
+            <Grid item xs={6} sm={4} key={index}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  paddingTop: '100%',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  boxShadow: 3,
+                }}
+              >
+                <img
+                  src={import.meta.env.VITE_PLANE_API_URI + photo.photoURL}
+                  alt={`Photo ${index + 1}`}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                  }}
+                />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseProfile} color="primary">Close</Button>
+      </DialogActions>
+    </>
+  )}
+</Dialog>
+
     </GenericPage>
   );
 };
