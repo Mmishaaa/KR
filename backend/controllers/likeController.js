@@ -10,6 +10,14 @@ class LikeController {
         return res.status(400).json({ message: "SenderId and ReceiverId are required" });
       }
   
+      const existingLike = await Like.findOne({
+        where: { senderId, receiverId },
+      });
+
+      if (existingLike) {
+        return res.status(400).json({ message: "You've already liked this profile!" });
+      }
+
       const like = await Like.create({ senderId, receiverId });
   
       const match = await Like.findOne({

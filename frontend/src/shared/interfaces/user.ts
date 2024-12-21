@@ -1,3 +1,4 @@
+import { Like } from "./like";
 import { Photo } from "./photo";
 import { Subscription } from "./subscription";
 
@@ -11,7 +12,7 @@ export interface User {
   description : string;
   gender: string;
   email: string;
-  photos: Photo[]
+  photos: Photo[];
 };
 
 export interface UserViewModel {
@@ -53,6 +54,8 @@ export interface RegisteredUser {
   description: string,
   city: string,
   photos: Photo[],
+  sentLikes: Like[],
+  receivedLikes: Like[]
 }
 
 export interface RegistrationResponse {

@@ -58,7 +58,7 @@ export const createLike = (
       
       dispatch(fetchSuccess());
     } else {
-      dispatch(fetchFailure("Registration failed" + JSON.stringify(res.data)));
+      dispatch(fetchFailure("Error: " + JSON.stringify(res.data)));
     }
   } catch (error: any) {
     dispatch(fetchFailure(error.payload || "An error occurred"));
