@@ -342,6 +342,53 @@ const generateJwt = (id, email, role) => {
         next(ApiError.internal("Error while updating a user: " + error.message))
       }
   }
+
+  async createUsers(req, res, next) {
+    try {
+        const { users } = req.body;
+
+        for(let user of users) {
+          const { email, password, age, firstName, lastName, gender, description } = user
+          if(!email || !password) {
+            return next(ApiError.badRequest("invalid password or email"))
+          }
+      
+          const isUserExists = await User.findOne({where: {email}})
+      
+          if(isUserExists) {
+            return next(ApiError.badRequest(`user with this email: ${email} already exists`))      
+          }
+      
+          const hashedPassword = await bcrypt.hash(password, 5);
+          
+          var currrentUtc = new Date();
+          
+          const newSubscription = await Subscription.create({
+            subscriptionType: "BASIC",
+            expiresAt: currrentUtc.setMonth(currrentUtc.getMonth() + 1),
+            createdAt: currrentUtc,
+            updatedAt: currrentUtc
+          });
+    
+          const newUser = await User.create({
+            firstName,
+            lastName,
+            email,
+            age,
+            gender,
+            description,
+            password: hashedPassword,
+            subscriptionId: newSubscription.id
+          });
+    
+        }
+
+      return res.status(200);
+    }
+    catch(error) {
+      next(ApiError.internal("Error while creating a user: " + error))
+    }    
+  }
 }
 
 const getUserWithoutPasssword = (user) => {

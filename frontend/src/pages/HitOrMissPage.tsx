@@ -104,7 +104,7 @@ const HitOrMissPage: FC = () => {
     <GenericPage title="Hit or Miss" icons={[<TuneIcon />]}>
       <Container maxWidth="sm" sx={{ margin: "32px 0", '@media (min-width:600px)': { padding: 0 } }}>
         <Box sx={{ backgroundColor: '#fff', padding: 2, borderRadius: "24px", boxShadow: 3 }}>
-          {unlikedProfiles .length > 0 ? (
+          {unlikedProfiles.length > 0 ? (
             <ProfileCard profile={unlikedProfiles [currentIndex]} onNextProfile={showNextProfile} />
           ) : (
             <Box sx={{ textAlign: 'center', padding: 2 }}>
