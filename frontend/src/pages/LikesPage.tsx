@@ -87,13 +87,25 @@ const LikesPage: FC = () => {
     );
   }
 
-  const profilesToDisplay = filter === "sent"
-    ? likedProfiles
-    : filter === "received"
-    ? profilesWithReceivedLikes
-    : filter === "mutual"
-    ? mutualLikes
-    : [...likedProfiles, ...profilesWithReceivedLikes];
+  const profilesToDisplay = (() => {
+    let combinedProfiles =
+      filter === "sent"
+        ? likedProfiles
+        : filter === "received"
+        ? profilesWithReceivedLikes
+        : filter === "mutual"
+        ? mutualLikes
+        : [...likedProfiles, ...profilesWithReceivedLikes];
+        
+    const uniqueProfilesMap = new Map();
+    combinedProfiles.forEach((profile) => {
+      if (profile) {
+        uniqueProfilesMap.set(profile.userId, profile);
+      }
+    });
+    return Array.from(uniqueProfilesMap.values());
+  })();
+  
 
   return (
     <GenericPage title="Likes">
