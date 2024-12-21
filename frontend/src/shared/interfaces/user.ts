@@ -1,4 +1,4 @@
-import Photo from "./photo";
+import { Photo } from "./photo";
 import { Subscription } from "./subscription";
 
 export interface User {
