@@ -72,13 +72,43 @@ const generateJwt = (id, email, role) => {
   async login(req, res, next) {
     try {
       const {email, password} = req.body;
-      const user = await User.findOne({where: {email}})
+
+      const user = await User.findOne({
+        where: {email},
+        include: [
+          {
+            model: Chat,
+            as: 'chats',
+            attributes: ['id'],
+          },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          },
+          {
+            model: Photo,  
+            as: 'photos',  
+            attributes: ['id', 'photoURL', 'isAvatar'], 
+          },
+          {
+            model: Like,
+            as: 'sentLikes',
+            attributes: ['id', 'receiverId', 'createdAt'],
+          },
+          {
+            model: Like,
+            as: 'receivedLikes',
+            attributes: ['id', 'senderId', 'createdAt'],
+          }
+        ],})
       
       if(!user) {
         return next(ApiError.badRequest(`User with email: ${email} doesn't exist`))
       }
 
       let isPasswordCorrect = await bcrypt.compare(password, user.password);
+
       if(!isPasswordCorrect) {
         return next(ApiError.badRequest("wrong password"))
       }
@@ -179,8 +209,18 @@ const generateJwt = (id, email, role) => {
           {
             model: Photo,  
             as: 'photos',  
-            attributes: ['id', 'photoURL', 'isAvatar', ], 
+            attributes: ['id', 'photoURL', 'isAvatar'], 
           },
+          {
+            model: Like,
+            as: 'sentLikes',
+            attributes: ['id', 'receiverId', 'createdAt'],
+          },
+          {
+            model: Like,
+            as: 'receivedLikes',
+            attributes: ['id', 'senderId', 'createdAt'],
+          }
         ],
       });
       if (!user) {

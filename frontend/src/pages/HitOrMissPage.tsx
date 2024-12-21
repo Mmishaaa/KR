@@ -12,7 +12,6 @@ const HitOrMissPage: FC = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const { profiles, isLoading, error: profilesError } = useSelector((state: RootState) => state.profiles);
-  const { error: likesError } = useSelector((state: RootState) => state.likes);
   const { user } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -38,9 +37,10 @@ const HitOrMissPage: FC = () => {
     setCurrentIndex(0);
   };
 
-  if (!unlikedProfiles  || unlikedProfiles .length === 0) {
+  if (!unlikedProfiles || unlikedProfiles .length === 0) {
     return (
-      <Box sx={{ 
+      <GenericPage title="HitOrMiss">
+        <Box sx={{ 
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -81,6 +81,7 @@ const HitOrMissPage: FC = () => {
           Reload Profiles
         </Button>
       </Box>
+      </GenericPage>
     );
   }
 
