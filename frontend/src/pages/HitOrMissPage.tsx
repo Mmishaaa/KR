@@ -19,19 +19,17 @@ const HitOrMissPage: FC = () => {
     dispatch(fetchAllProfiles());
   }, [dispatch]);
 
-  console.log("error: " + profilesError)
-
   const profilesWithoutUser = profiles?.filter((p) => p.userId !== user?.id);
 
-  const unlikedProfiles = profilesWithoutUser//profilesWithoutUser?.filter((profile) => !profile?.receivedLikes?.some((like) => like.senderId === user?.id));
+  const unlikedProfiles = profilesWithoutUser?.filter((profile) => !profile?.receivedLikes?.some((like) => like.senderId === user?.id));
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
 
-  if (profilesError || likesError) {
+  if (profilesError) {
     return (
-      <Typography>Error: {profilesError || likesError}</Typography>
+      <Typography>Error: {profilesError}</Typography>
     );
   }
 
