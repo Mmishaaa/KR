@@ -272,6 +272,11 @@ const generateJwt = (id, email, role) => {
             as: 'coordinates',  // Alias specified in the relationships
             attributes: ['lat', 'lng', 'name'], // Specify the attributes you need
           },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          },
         ],
       });
       return res.status(200).json(users);
