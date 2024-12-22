@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import ProfileCard from "../components/profile/profileCard";
 import { AppDispatch, RootState } from "../../state/store";
 import { fetchAllProfiles, setProfiles } from "../../state/profiles/profilesSlice";
-import React from "react";
 
 const HitOrMissPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();
