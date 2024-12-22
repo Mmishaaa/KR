@@ -11,7 +11,6 @@ dotenv.config();
 
 const { User, Subscription, Photo, Chat, Like, Coordinates} = models;
 
-
 const generateJwt = (id, email, role) => {
   if (!process.env.SECRET_KEY) {
     return ApiError.badRequest("SECRET_KEY is not defined in environment variables")

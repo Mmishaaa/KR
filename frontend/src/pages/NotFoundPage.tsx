@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import React from "react";
 import { FC } from "react";
 
 const NotFoundPage: FC = () => {

@@ -7,6 +7,7 @@ import { CoordinatesViewModel } from "../shared/interfaces/coordinates";
 import { addCoordinates, fetchCoordinatedByUserId, putCoordinates, updateCoordinates } from "../../state/coordinates/coordinatesSlice";
 import GenericPage from "./GenericPage";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
 const MapPage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();

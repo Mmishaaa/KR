@@ -28,6 +28,7 @@ import { jsPDF } from "jspdf";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph, TextRun } from "docx";
 import { Photo } from "../shared/interfaces/photo";
+import React from "react";
 
 
 interface Profile {

@@ -5,14 +5,12 @@ const messageRouter = new Router();
 
 messageRouter.post("/", messageController.createAsync)
 
-messageRouter.post("/:id", messageController.getByIdAsync)
+messageRouter.get("/:id", messageController.getByIdAsync)
 
-messageRouter.post("/", messageController.getAllAsync)
-
-messageRouter.get("/:id", messageController.updateAsync)
-
-messageRouter.delete("/:id", messageController.deleteAsync)
+messageRouter.get("/", messageController.getAllAsync)
 
 messageRouter.put("/:id", messageController.updateAsync)
+
+messageRouter.delete("/:id", messageController.deleteAsync)
 
 export default messageRouter;

@@ -2,6 +2,7 @@ import { CssBaseline, Box, Container, Divider } from "@mui/material"
 import { FC, PropsWithChildren, ReactElement } from "react"
 import Header from "../components/header/header"
 import Footer from "../components/footer/footer"
+import React from "react";
 
 interface Props {
   title: string;
