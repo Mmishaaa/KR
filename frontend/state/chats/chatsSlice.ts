@@ -3,6 +3,7 @@ import { Chat } from '../../src/shared/interfaces/chat';
 import { RootState } from '../store';
 import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
+import { Message, MessageViewModel } from '../../src/shared/interfaces/message';
 
 export interface ChatsState {
   chats: Chat[]
@@ -59,7 +60,30 @@ export const getAllChatsByUserId = (
       
       dispatch(fetchSuccess());
     } else {
-      dispatch(fetchFailure("Registration failed" + JSON.stringify(res.data)));
+      dispatch(fetchFailure("Error while retreiving all chats" + JSON.stringify(res.data)));
+    }
+  } catch (error: any) {
+    dispatch(fetchFailure(error.payload || "An error occurred"));
+  }
+};
+
+export const addMessageToChatAsync = (
+  message: MessageViewModel
+): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {
+  try {
+    dispatch(fetchStart());
+
+    const res = await HttpRequest<Message>({
+      uri: `/messages`,
+      method: RESTMethod.Post,
+      item: message
+    });
+
+    if (res?.code === "success") {
+      
+      dispatch(fetchSuccess());
+    } else {
+      dispatch(fetchFailure("Error while sending a message" + JSON.stringify(res.data)));
     }
   } catch (error: any) {
     dispatch(fetchFailure(error.payload || "An error occurred"));
