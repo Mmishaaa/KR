@@ -12,7 +12,8 @@ interface RouteProps {
 
 const AppRouter: FC = () => {
   const isAuth = useSelector((state: RootState) => state.user.isAuth) 
-  const userId = useSelector((state: RootState) => state.user.user?.id) 
+  const user = useSelector((state: RootState) => state.user.user) 
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const AppRouter: FC = () => {
     else {
       navigate(`/chats`)
     }
-  }, [isAuth]);
+  }, [isAuth, user]);
 
   const renderRoutes = (routes: RouteProps[]) =>
     routes.map((route) => (
@@ -34,7 +35,7 @@ const AppRouter: FC = () => {
 
   return (
     <Routes>
-      {isAuth && renderRoutes(privateRoutes)}
+      {isAuth && user?.role === "ADMIN" && renderRoutes(privateRoutes)}
       {renderRoutes(publicRoutes)}
     </Routes>
   )
