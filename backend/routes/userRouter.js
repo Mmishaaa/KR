@@ -22,4 +22,6 @@ userRouter.put("/:id", userController.updateAsync)
 
 userRouter.post("/createUsers", userController.createUsers)
 
+userRouter.put("/:id/updateRole", userController.updateRoleAsync)
+
 export default userRouter;
