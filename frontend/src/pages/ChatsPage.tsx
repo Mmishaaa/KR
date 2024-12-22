@@ -32,7 +32,7 @@ const ChatsPage: FC = () => {
     <GenericPage title="Chats" icons={[<NotificationsNoneSharpIcon key="notification-icon" />]}>
       <Box sx={{ padding: 2 }}>
         <Typography variant="h6" gutterBottom>
-          Chats
+          Your Chats
         </Typography>
         <List>
           {chats.map((chat) => (

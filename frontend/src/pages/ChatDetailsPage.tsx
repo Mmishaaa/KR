@@ -1,17 +1,19 @@
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useParams, useNavigate  } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../state/store";
 import { addMessageToChatAsync } from "../../state/chats/chatsSlice";
-import { Box, Typography, List, ListItem, TextField, Button, Avatar } from "@mui/material";
+import { Box, Typography, List, ListItem, TextField, Button, Avatar, IconButton } from "@mui/material";
 import { MessageViewModel } from "../shared/interfaces/message";
-import { Photo } from "../shared/interfaces/photo";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const ChatDetailsPage = () => {
   const { id: chatId } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const [newMessage, setNewMessage] = useState("");
   
+  const navigate = useNavigate();
+
   const chat = useSelector((state: RootState) =>
     state.chats.chats.find((c) => c.id === chatId)
   );
@@ -25,6 +27,10 @@ const ChatDetailsPage = () => {
       </Box>
     );
   }
+
+  const handleBack = () => {
+    navigate("/chats");
+  };
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
@@ -52,13 +58,43 @@ const ChatDetailsPage = () => {
     >
       <Box
         sx={{
-          padding: 2,
-          background: "#fff",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-          borderBottom: "1px solid #e0e0e0",
+          padding: "12px 24px",
+          background: "linear-gradient(135deg, #f9f9f9, #f1f1f1)",
+          boxShadow: "0px 6px 18px rgba(0, 0, 0, 0.1)",
+          borderBottom: "2px solid #e0e0e0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderRadius: "12px",
+          maxWidth: "100%",
         }}
       >
-        <Typography variant="h5" gutterBottom sx={{ color: "#333" }}>
+        <IconButton
+          onClick={handleBack}
+          sx={{
+            backgroundColor: "#f7f7f7",
+            borderRadius: "50%",
+            padding: "10px",
+            transition: "background-color 0.3s ease",
+            "&:hover": {
+              backgroundColor: "#e0e0e0",
+            },
+          }}
+        >
+          <ArrowBackIcon sx={{ fontSize: 30, color: "#5C6BC0" }} />
+        </IconButton>
+
+        <Typography
+          variant="h5"
+          sx={{
+            color: "#333",
+            fontWeight: 700,
+            fontFamily: "'Roboto', sans-serif",
+            marginLeft: 2,
+            letterSpacing: "0.5px",
+            textAlign: "right",
+          }}
+        >
           Chat with {chat.users[0]?.firstName || "Unknown"} {chat.users[0]?.lastName || "User"}
         </Typography>
       </Box>
