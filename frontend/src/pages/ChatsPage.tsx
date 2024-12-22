@@ -45,12 +45,16 @@ const ChatsPage: FC = () => {
                 <Avatar
                   src={
                     chat.users[0]?.photos?.find(photo => photo.isAvatar)?.photoURL
-                      ? import.meta.env.VITE_PLANE_API_URI + chat.users[0]?.photos?.find(photo => photo.isAvatar)?.photoURL
-                      : null
+                      ? `${import.meta.env.VITE_PLANE_API_URI}${chat.users[0]?.photos.find(photo => photo.isAvatar)?.photoURL}`
+                      
+                      : chat.users[0]?.photos?.find(photo => !photo.isAvatar)?.photoURL
+                      ? `${import.meta.env.VITE_PLANE_API_URI}${chat.users[0]?.photos.find(photo => !photo.isAvatar)?.photoURL}`
+                      
+                      : undefined
                   }
                 >
                   {chat.users[0]?.firstName?.[0] || "U"}
-                </Avatar>
+              </Avatar>
               </ListItemAvatar>
               <ListItemText
                 primary={`${chat.users[0]?.firstName || "Unknown"} ${chat.users[0]?.lastName || "User"}`}

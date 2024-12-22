@@ -234,18 +234,20 @@ const LikesPage: FC = () => {
                     borderRadius: 2,
                   }}
                 >
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={
-                      import.meta.env.VITE_PLANE_API_URI +
-                      (profile?.photos?.find((photo: Photo) => photo.isAvatar)?.photoURL ||
-                        profile?.photos[0]?.photoURL ||
-                        "/default-profile.jpg")
-                    }
-                    alt={`${profile?.userName}`}
-                    sx={{ objectFit: "cover", borderRadius: 2 }}
-                  />
+                <CardMedia
+                  component="img"
+                  height="200"
+                  image={
+                    import.meta.env.VITE_PLANE_API_URI +
+                    (
+                      profile?.photos?.find((photo: Photo) => photo.isAvatar)?.photoURL ||
+                      profile?.photos?.[0]?.photoURL ||
+                      "/default-profile.jpg"
+                    )
+                  }
+                  alt={profile?.userName || "User Profile"}
+                  sx={{ objectFit: "cover", borderRadius: 2 }}
+                />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" component="div" gutterBottom>
                       {profile?.userName}

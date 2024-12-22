@@ -34,7 +34,17 @@ class ChatController {
         where: { id },
         include: [
           { model: Message, as: 'messages' },
-          { model: User, as: 'users' }
+          { 
+            model: User,
+            as: 'users',
+            include: [
+              {
+                model: Photo,
+                as: 'photos',
+                attributes: ['id', 'photoURL', 'isAvatar']
+              }
+            ]
+          } 
         ]
       });
       if (chat) {
@@ -89,25 +99,43 @@ class ChatController {
   
       const user = await User.findOne({
         where: { id: userId },
-        include: {
-          model: Chat,
-          as: 'chats',
-          include: [
-            { model: Message, as: 'messages',include:  { model: User, as: 'user' }, },
-            { 
-              model: User,
-              as: 'users',
-              include: [
-                {
-                  model: Photo,
-                  as: 'photos',
-                  attributes: ['id', 'photoURL', 'isAvatar']
-                }
-              ]
-            } 
-          ]
-        }
-      });
+        include: [
+          {
+            model: Chat,
+            as: 'chats',
+            include: [
+              {
+                model: Message,
+                as: 'messages',
+                include: [
+                  {
+                    model: User,
+                    as: 'user',
+                    include: [
+                      {
+                        model: Photo,
+                        as: 'photos',
+                        attributes: ['id', 'photoURL', 'isAvatar']
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                model: User,
+                as: 'users',
+                include: [
+                  {
+                    model: Photo,
+                    as: 'photos',
+                    attributes: ['id', 'photoURL', 'isAvatar']
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      });      
   
       if (user) {
         console.log('User found:', JSON.stringify(user, null, 2)); 

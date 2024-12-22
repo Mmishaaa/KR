@@ -5,6 +5,7 @@ import { RootState, AppDispatch } from "../../state/store";
 import { addMessageToChatAsync } from "../../state/chats/chatsSlice";
 import { Box, Typography, List, ListItem, TextField, Button, Avatar } from "@mui/material";
 import { MessageViewModel } from "../shared/interfaces/message";
+import { Photo } from "../shared/interfaces/photo";
 
 const ChatDetailsPage = () => {
   const { id: chatId } = useParams<{ id: string }>();
@@ -74,7 +75,7 @@ const ChatDetailsPage = () => {
         }}
       >
         <List sx={{ marginTop: "auto" }}>
-          {chat.messages.map((message, index) => (
+          {chat.messages.map((message, index) => (            
             <ListItem
               key={message.id}
               sx={{
@@ -84,17 +85,24 @@ const ChatDetailsPage = () => {
                 alignItems: "center",
               }}
             >
-              <Avatar
-                sx={{
-                  bgcolor: message.senderId === user?.id ? "#3f51b5" : "#f50057",
-                  color: "#fff",
-                  width: 40,
-                  height: 40,
-                  fontSize: "1rem",
-                }}
-              >
-                {message.user.firstName?.[0] || "U"}
-              </Avatar>
+          <Avatar
+            src={
+              message.user?.photos?.find((photo) => photo.isAvatar)?.photoURL
+                ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos.find((photo) => photo.isAvatar)?.photoURL}`
+                : message.user?.photos?.[0]?.photoURL
+                ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos[0].photoURL}`
+                : undefined
+            }
+            sx={{
+              bgcolor: message.senderId === user?.id ? "#3f51b5" : "#f50057",
+              color: "#fff",
+              width: 40,
+              height: 40,
+              fontSize: "1rem",
+            }}
+          >
+            {message.user?.firstName?.[0] || "U"}
+          </Avatar>
               <Box
                 sx={{
                   padding: 2,
