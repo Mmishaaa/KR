@@ -20,4 +20,6 @@ userRouter.delete("/:id", userController.deleteAsync)
 
 userRouter.put("/:id", userController.updateAsync)
 
+userRouter.post("/createUsers", userController.createUsers)
+
 export default userRouter;

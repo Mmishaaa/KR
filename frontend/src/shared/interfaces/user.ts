@@ -55,7 +55,8 @@ export interface RegisteredUser {
   city: string,
   photos: Photo[],
   sentLikes: Like[],
-  receivedLikes: Like[]
+  receivedLikes: Like[],
+  coordinates: Coordinates
 }
 
 export interface RegistrationResponse {

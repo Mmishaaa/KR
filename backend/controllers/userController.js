@@ -9,7 +9,7 @@ import path from 'path';
 
 dotenv.config();
 
-const { User, Subscription, Photo, Chat, Like} = models;
+const { User, Subscription, Photo, Chat, Like, Coordinates} = models;
 
 
 const generateJwt = (id, email, role) => {
@@ -72,13 +72,43 @@ const generateJwt = (id, email, role) => {
   async login(req, res, next) {
     try {
       const {email, password} = req.body;
-      const user = await User.findOne({where: {email}})
+
+      const user = await User.findOne({
+        where: {email},
+        include: [
+          {
+            model: Chat,
+            as: 'chats',
+            attributes: ['id'],
+          },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
+          },
+          {
+            model: Photo,  
+            as: 'photos',  
+            attributes: ['id', 'photoURL', 'isAvatar'], 
+          },
+          {
+            model: Like,
+            as: 'sentLikes',
+            attributes: ['id', 'receiverId', 'createdAt'],
+          },
+          {
+            model: Like,
+            as: 'receivedLikes',
+            attributes: ['id', 'senderId', 'createdAt'],
+          }
+        ],})
       
       if(!user) {
         return next(ApiError.badRequest(`User with email: ${email} doesn't exist`))
       }
 
       let isPasswordCorrect = await bcrypt.compare(password, user.password);
+
       if(!isPasswordCorrect) {
         return next(ApiError.badRequest("wrong password"))
       }
@@ -179,8 +209,18 @@ const generateJwt = (id, email, role) => {
           {
             model: Photo,  
             as: 'photos',  
-            attributes: ['id', 'photoURL', 'isAvatar', ], 
+            attributes: ['id', 'photoURL', 'isAvatar'], 
           },
+          {
+            model: Like,
+            as: 'sentLikes',
+            attributes: ['id', 'receiverId', 'createdAt'],
+          },
+          {
+            model: Like,
+            as: 'receivedLikes',
+            attributes: ['id', 'senderId', 'createdAt'],
+          }
         ],
       });
       if (!user) {
@@ -227,7 +267,12 @@ const generateJwt = (id, email, role) => {
             model: Like,
             as: 'receivedLikes',
             attributes: ['id', 'senderId'],
-          }
+          },
+          {
+            model: Coordinates, // Including Coordinates model
+            as: 'coordinates',  // Alias specified in the relationships
+            attributes: ['lat', 'lng', 'name'], // Specify the attributes you need
+          },
         ],
       });
       return res.status(200).json(users);
@@ -296,6 +341,53 @@ const generateJwt = (id, email, role) => {
       catch(error) {
         next(ApiError.internal("Error while updating a user: " + error.message))
       }
+  }
+
+  async createUsers(req, res, next) {
+    try {
+        const { users } = req.body;
+
+        for(let user of users) {
+          const { email, password, age, firstName, lastName, gender, description } = user
+          if(!email || !password) {
+            return next(ApiError.badRequest("invalid password or email"))
+          }
+      
+          const isUserExists = await User.findOne({where: {email}})
+      
+          if(isUserExists) {
+            return next(ApiError.badRequest(`user with this email: ${email} already exists`))      
+          }
+      
+          const hashedPassword = await bcrypt.hash(password, 5);
+          
+          var currrentUtc = new Date();
+          
+          const newSubscription = await Subscription.create({
+            subscriptionType: "BASIC",
+            expiresAt: currrentUtc.setMonth(currrentUtc.getMonth() + 1),
+            createdAt: currrentUtc,
+            updatedAt: currrentUtc
+          });
+    
+          const newUser = await User.create({
+            firstName,
+            lastName,
+            email,
+            age,
+            gender,
+            description,
+            password: hashedPassword,
+            subscriptionId: newSubscription.id
+          });
+    
+        }
+
+      return res.status(200);
+    }
+    catch(error) {
+      next(ApiError.internal("Error while creating a user: " + error))
+    }    
   }
 }
 
