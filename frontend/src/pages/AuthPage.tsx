@@ -6,6 +6,7 @@ import { login, register } from "../../state/user/userSlice";
 import { UserAuthentication } from "../shared/interfaces/user";
 import { AppDispatch } from "../../state/store";
 import { RootState } from "../../state/store";
+import React from "react";
 
 declare global {
   interface ymaps {

@@ -4,6 +4,7 @@ import photoReducer from "./photo/photoSlice"
 import coordinatesSlice from './coordinates/coordinatesSlice';
 import profilesReducer from './profiles/profilesSlice';
 import likesReducer from './likes/likesSlice';
+import chatsReducer from "./chats/chatsSlice"
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     photo: photoReducer,
     coordinates: coordinatesSlice,
     profiles: profilesReducer,
-    likes: likesReducer
+    likes: likesReducer,
+    chats: chatsReducer
   }
 })
 

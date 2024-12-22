@@ -22,3 +22,5 @@ router.use("/messages", messageRouter)
 router.use("/photos", photoRouter)
 
 router.use("/subscriptions", subscriptionRouter)
+
+router.use("/messages", messageRouter)

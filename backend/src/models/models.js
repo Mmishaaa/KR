@@ -21,9 +21,10 @@ const Chat = mySequelize.define("chat", {
 const Message = mySequelize.define("message", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
   text: { type: DataTypes.STRING, allowNull: false },
-  date: { type: DataTypes.DATE, allowNull: false },
   chatId: { type: DataTypes.UUID, allowNull: false },
   senderId: { type: DataTypes.UUID, allowNull: false },
+  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
 });
 
 const Like = mySequelize.define("like", {
