@@ -23,6 +23,12 @@ import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store";
 import { fetchAllProfiles } from "../../state/profiles/profilesSlice";
+import * as XLSX from "xlsx";
+import { jsPDF } from "jspdf";
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import { Photo } from "../shared/interfaces/photo";
+
 
 interface Profile {
   userId: string;
@@ -73,6 +79,73 @@ const LikesPage: FC = () => {
 
   const handleCloseProfile = () => {
     setSelectedProfile(null);
+  };
+
+  const exportToXLSX = () => {
+    const worksheet = XLSX.utils.json_to_sheet(profilesToDisplay.map((profile) => ({
+      Name: profile.userName,
+      Location: profile.userLocation,
+      Age: profile.userAge,
+      Description: profile.userDescription,
+    })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Likes");
+    XLSX.writeFile(workbook, "Likes.xlsx");
+  };
+
+  const exportToPDF = () => {
+  const doc = new jsPDF();
+  let y = 20;
+
+  profilesToDisplay.forEach((profile) => {
+    doc.setFontSize(16);
+    doc.setTextColor(0, 0, 255);
+    doc.text(`Name: ${profile.userName || "Unknown"}`, 10, y);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text(`Location: ${profile.userLocation || "Unknown"}`, 10, y + 10);
+    doc.text(`Age: ${profile.userAge || "Unknown"}`, 10, y + 20);
+
+    const description = `Description: ${profile.userDescription || "N/A"}`;
+    const maxWidth = 180;
+    const splitDescription = doc.splitTextToSize(description, maxWidth);
+
+    splitDescription.forEach((line: string | string[], index: number) => {
+      doc.text(line, 10, y + 30 + index * 10);
+    });
+
+    y += 40 + (splitDescription.length - 1) * 10;
+
+    if (y > doc.internal.pageSize.height - 20) {
+      doc.addPage();
+      y = 20;
+    }
+  });
+
+  doc.save("Likes.pdf");
+};
+
+  const exportToWord = async () => {
+    const doc = new Document({
+      sections: [
+        {
+          children: profilesToDisplay.map((profile) =>
+            new Paragraph({
+              children: [
+                new TextRun({ text: `Name: ${profile.userName}`, bold: true }),
+                new TextRun(`\nLocation: ${profile.userLocation}`),
+                new TextRun(`\nAge: ${profile.userAge}`),
+                new TextRun(`\nDescription: ${profile.userDescription}\n`),
+              ],
+            })
+          ),
+        },
+      ],
+    });
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, "Likes.docx");
   };
 
   if (isLoading) {
@@ -130,6 +203,18 @@ const LikesPage: FC = () => {
           </Select>
         </FormControl>
 
+        <Box sx={{ marginBottom: 2, display: "flex", gap: 2 }}>
+          <Button variant="contained" color="primary" onClick={exportToXLSX}>
+            Export to XLSX
+          </Button>
+          <Button variant="contained" color="secondary" onClick={exportToPDF}>
+            Export to PDF
+          </Button>
+          <Button variant="contained" color="success" onClick={exportToWord}>
+            Export to Word
+          </Button>
+        </Box>
+        
         {profilesToDisplay.length > 0 ? (
           <Grid container spacing={3}>
             {profilesToDisplay.map((profile) => (
@@ -155,7 +240,7 @@ const LikesPage: FC = () => {
                     height="200"
                     image={
                       import.meta.env.VITE_PLANE_API_URI +
-                      (profile?.photos?.find((photo) => photo.isAvatar)?.photoURL ||
+                      (profile?.photos?.find((photo: Photo) => photo.isAvatar)?.photoURL ||
                         profile?.photos[0]?.photoURL ||
                         "/default-profile.jpg")
                     }
