@@ -11,6 +11,7 @@ import { RootState } from "../../../state/store";
 
 const Footer: FC = () => {
   const userId = useSelector((state: RootState) => state.user.user?.id) 
+  const role = useSelector((state: RootState) => state.user.user?.role)
   return (
     <AppBar position="sticky" color="secondary" sx={{bottom: 0}}>
       <Container 
@@ -24,7 +25,13 @@ const Footer: FC = () => {
             justifyContent: 'space-between',
             padding: "0"
           }}>
-          <NavbarItem to="/near" text="Near" icon={<NavigationOutlinedIcon />} ></NavbarItem>
+          {role === "ADMIN" && (
+            <NavbarItem
+              to="/admin"
+              text="Admin"
+              icon={<NavigationOutlinedIcon />}
+            />
+          )}
           <NavbarItem to="/" text="Hit or miss" icon={<StyleOutlinedIcon />} ></NavbarItem>
           <NavbarItem to="/likes" text="Likes" icon={<FavoriteBorderOutlinedIcon />} ></NavbarItem>
           <NavbarItem to="/chats" text="Chats" icon={<ChatOutlinedIcon />} ></NavbarItem>

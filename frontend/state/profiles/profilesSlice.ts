@@ -36,6 +36,11 @@ const profileSlice = createSlice({
     },
     setProfiles(state, action: PayloadAction<Profile[] | null>) {
       state.profiles = action.payload
+    },
+    filterProfiles(state, action: PayloadAction<string>) {
+      if(state.profiles) {
+        state.profiles = state?.profiles.filter((profile) => profile.userId !== action.payload);
+      }
     }
   }
 });
@@ -76,8 +81,30 @@ export const fetchAllProfiles = (
   }
 }
 
+export const removeProfile = (
+  id: string
+  ): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {
+    try {
+      dispatch(fetchStart());
+  
+      const res = await HttpRequest<ProfilesResponse>({
+        uri: `/users/${id}`,
+        method: RESTMethod.Delete,
+      });
+      
+      if (res?.code === "success") {
+        dispatch(filterProfiles(id));    
+        dispatch(fetchSuccess());
+      } else {
+        dispatch(fetchFailure(res.data));
+      }
+    } catch (error: any) {
+      dispatch(fetchFailure(error.message || "An error occurred"));
+    }
+  }
 
-export const { fetchStart, fetchFailure, fetchSuccess, updateProfiles, setProfiles } = profileSlice.actions;
+
+export const { fetchStart, fetchFailure, fetchSuccess, updateProfiles, setProfiles, filterProfiles } = profileSlice.actions;
 
 
 export default profileSlice.reducer;

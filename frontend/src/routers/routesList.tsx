@@ -7,6 +7,7 @@ import HitOrMissPage from "../pages/HitOrMissPage";
 import AuthPage from '../pages/AuthPage';
 import MapPage from '../pages/MapPage';
 import ChatDetailsPage from '../pages/ChatDetailsPage';
+import AdminPage from "../pages/AdminPage"
 
 interface RouterType {
   title: string;
@@ -29,6 +30,5 @@ export const publicRoutes: RouterType[] = [
 
 export const privateRoutes: RouterType[] = [
   ...publicRoutes,
-  { title: "Admin", path: '/admin', element: <LikesPage /> },
-  
+  { title: "Admin", path: '/admin', element: <AdminPage /> }, 
 ]
