@@ -43,7 +43,7 @@ const Photo = mySequelize.define("photo", {
 
 const Subscription = mySequelize.define("subscription", {
   id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
-  subscriptionType: { type: DataTypes.ENUM("BASIC", "PREMIUM", "VIP"), allowNull: false },
+  subscriptionType: { type: DataTypes.ENUM("BASIC", "PREMIUM"), allowNull: false },
   expiresAt: { type: DataTypes.DATE, allowNull: false },
   createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },

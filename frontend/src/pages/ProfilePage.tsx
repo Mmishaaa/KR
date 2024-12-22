@@ -14,7 +14,6 @@ import { fetchUserById } from '../../state/user/userSlice';
 import ProfileSubscription from '../components/profile/profileSubscription';
 import ProfileLocation from '../components/profile/profileLocation';
 import { fetchCoordinatedByUserId as fetchCoordinatesByUserId } from '../../state/coordinates/coordinatesSlice';
-import React from 'react';
 
 const ProfilePage: FC = () => {
   const dispatch = useDispatch<AppDispatch>();

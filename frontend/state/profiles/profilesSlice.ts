@@ -65,9 +65,11 @@ export const fetchAllProfiles = (
           userDescription: user.description,
           userName: user.firstName + " " + user.lastName,
           userLocation: user.coordinates?.name,
+          userRole: user.role,
           photos: user.photos,
           sentLikes: user.sentLikes,
-          receivedLikes: user.receivedLikes
+          receivedLikes: user.receivedLikes,
+          subscription: user.subscription
         })
       });
 

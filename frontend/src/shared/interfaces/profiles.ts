@@ -1,5 +1,7 @@
+import { UserRole } from "../enums/userRole";
 import { Like } from "./like";
 import { Photo } from "./photo";
+import { Subscription } from "./subscription";
 import { RegisteredUser } from "./user";
 
 export interface Profile {
@@ -8,9 +10,11 @@ export interface Profile {
   userLocation: string;
   userDescription: string;
   userAge: number;
+  userRole: UserRole;
   photos: Photo[];
   sentLikes: Like[];
-  receivedLikes: Like[]
+  receivedLikes: Like[],
+  subscription: Subscription
 }
 
 export interface ProfilesResponse {

@@ -8,3 +8,8 @@ export interface Subscription {
   createdAt: Date,
   updatedAt: Date
 }
+
+export interface SubscriptionViewModel {
+  userId: string;
+  subscriptionType: SubscriptionType
+}

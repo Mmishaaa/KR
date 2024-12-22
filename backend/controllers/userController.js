@@ -268,9 +268,14 @@ const generateJwt = (id, email, role) => {
             attributes: ['id', 'senderId'],
           },
           {
-            model: Coordinates, // Including Coordinates model
-            as: 'coordinates',  // Alias specified in the relationships
-            attributes: ['lat', 'lng', 'name'], // Specify the attributes you need
+            model: Coordinates,
+            as: 'coordinates',
+            attributes: ['lat', 'lng', 'name'],
+          },
+          {
+            model: Subscription,  
+            as: 'subscription',  
+            attributes: ['id', 'subscriptionType', 'expiresAt'], 
           },
         ],
       });
@@ -388,6 +393,37 @@ const generateJwt = (id, email, role) => {
       next(ApiError.internal("Error while creating a user: " + error))
     }    
   }
+
+  async updateRoleAsync(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
+
+      if (!role) {
+        return next(ApiError.badRequest("Role is required"));
+      }
+
+      const validRoles = ["USER", "ADMIN"];
+      if (!validRoles.includes(role)) {
+        return next(ApiError.badRequest("Invalid role"));
+      }
+
+      const user = await User.findByPk(id);
+      if (!user) {
+        return next(ApiError.notFound("User not found"));
+      }
+
+      user.role = role;
+
+      await user.save();
+
+      const userWithoutPassword = getUserWithoutPasssword(user.toJSON());
+      return res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      next(ApiError.internal("Error while updating the user role: " + error.message));
+    }
+  }
+
 }
 
 const getUserWithoutPasssword = (user) => {
