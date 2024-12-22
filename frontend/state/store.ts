@@ -5,6 +5,7 @@ import coordinatesSlice from './coordinates/coordinatesSlice';
 import profilesReducer from './profiles/profilesSlice';
 import likesReducer from './likes/likesSlice';
 import chatsReducer from "./chats/chatsSlice"
+import subscriptionReducer from "./subscription/subscriptionSlice"
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     coordinates: coordinatesSlice,
     profiles: profilesReducer,
     likes: likesReducer,
-    chats: chatsReducer
+    chats: chatsReducer,
+    subscription: subscriptionReducer
   }
 })
 

@@ -4,6 +4,7 @@ import { HttpRequest } from '../../src/api/genericApi';
 import { RESTMethod } from '../../src/shared/enums/requestMethod';
 import { RootState } from '../store';
 import { setPhoto } from '../photo/photoSlice';
+import { updateSubscription } from '../subscription/subscriptionSlice';
 
 export interface UserState {
   user: RegisteredUser | null
@@ -94,6 +95,7 @@ export const login = (
     if (res?.code === "success") {
       dispatch(updateUser(res.data.newUser));
       dispatch(setIsAuth(true));
+      dispatch(updateSubscription(res.data.newUser.subscription))
       localStorage.setItem("token", res.data.jwt)
       
       //navigate(`/profiles/${res.data.newUser.id}`);   
@@ -123,6 +125,8 @@ export const fetchUserById = (
     if (res?.code === "success") {
       dispatch(updateUser(res.data));    
       dispatch(setPhoto(res.data.photos))
+      dispatch(updateSubscription(res.data.subscription))
+
       dispatch(fetchSuccess());
     } else {
       dispatch(fetchFailure("Login failed"));
