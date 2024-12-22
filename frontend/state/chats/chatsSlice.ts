@@ -55,17 +55,23 @@ export const getAllChatsByUserId = (
     });
 
     if (res?.code === "success") {
-      
-      dispatch(setChats(res.data));
-      
+      const sortedChats = res.data.map(chat => ({
+        ...chat,
+        messages: chat.messages.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()),
+      }));
+
+      console.log("sortedChats: ", JSON.stringify(sortedChats));
+
+      dispatch(setChats(sortedChats));
       dispatch(fetchSuccess());
     } else {
-      dispatch(fetchFailure("Error while retreiving all chats" + JSON.stringify(res.data)));
+      dispatch(fetchFailure("Error while retrieving all chats: " + JSON.stringify(res.data)));
     }
   } catch (error: any) {
     dispatch(fetchFailure(error.payload || "An error occurred"));
   }
 };
+
 
 export const addMessageToChatAsync = (
   message: MessageViewModel

@@ -1,17 +1,36 @@
-import { useState } from "react";
-import { useParams, useNavigate  } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../state/store";
 import { addMessageToChatAsync } from "../../state/chats/chatsSlice";
 import { Box, Typography, List, ListItem, TextField, Button, Avatar, IconButton } from "@mui/material";
 import { MessageViewModel } from "../shared/interfaces/message";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+
+const highlightText = (text: string, searchTerm: string) => {
+  if (!searchTerm) return text;
+
+  const regex = new RegExp(`(${searchTerm})`, "gi");
+  return text.split(regex).map((part, index) =>
+    part.toLowerCase() === searchTerm.toLowerCase() ? (
+      <span key={index} style={{ backgroundColor: "#ffeb3b", fontWeight: "bold" }}>
+        {part}
+      </span>
+    ) : (
+      part
+    )
+  );
+};
 
 const ChatDetailsPage = () => {
   const { id: chatId } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const [newMessage, setNewMessage] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+
   const navigate = useNavigate();
 
   const chat = useSelector((state: RootState) =>
@@ -19,6 +38,23 @@ const ChatDetailsPage = () => {
   );
 
   const user = useSelector((state: RootState) => state.user.user);
+
+  const messageRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  useEffect(() => {
+    if (searchQuery && messageRefs.current.length > 0) {
+      const matchingMessages = chat?.messages.filter((message) =>
+        message.text.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      
+      if (matchingMessages && matchingMessages.length > 0) {
+        const currentRef = messageRefs.current[currentMessageIndex];
+        if (currentRef) {
+          currentRef.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }
+    }
+  }, [searchQuery, chat?.messages, currentMessageIndex]);
 
   if (!chat) {
     return (
@@ -45,6 +81,22 @@ const ChatDetailsPage = () => {
       dispatch(addMessageToChatAsync(message));
       setNewMessage("");
     }
+  };
+
+  const filteredMessages = chat.messages.filter((message) =>
+    message.text.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleNextMessage = () => {
+    if (filteredMessages.length === 0) return;
+    const nextIndex = (currentMessageIndex + 1) % filteredMessages.length;
+    setCurrentMessageIndex(nextIndex);
+  };
+
+  const handlePreviousMessage = () => {
+    if (filteredMessages.length === 0) return;
+    const prevIndex = (currentMessageIndex - 1 + filteredMessages.length) % filteredMessages.length;
+    setCurrentMessageIndex(prevIndex);
   };
 
   return (
@@ -99,6 +151,29 @@ const ChatDetailsPage = () => {
         </Typography>
       </Box>
 
+      <Box sx={{ padding: "8px 24px", background: "#fff", borderBottom: "1px solid #e0e0e0" }}>
+        <TextField
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          label="Search messages"
+          variant="outlined"
+          fullWidth
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "25px",
+            },
+          }}
+        />
+      </Box>
+
+      <Box sx={{ padding: "8px 24px", background: "#fff" }}>
+        {searchQuery ? (
+          <Typography variant="subtitle2" color="textSecondary">
+            {filteredMessages.length} {filteredMessages.length === 1 ? "message" : "messages"} found
+          </Typography>
+        ) : null}
+      </Box>
+
       <Box
         sx={{
           flex: 1,
@@ -111,9 +186,10 @@ const ChatDetailsPage = () => {
         }}
       >
         <List sx={{ marginTop: "auto" }}>
-          {chat.messages.map((message, index) => (            
+          {chat.messages.map((message, index) => (
             <ListItem
               key={message.id}
+              ref={(el) => (messageRefs.current[index] = el)}
               sx={{
                 display: "flex",
                 flexDirection: message.senderId === user?.id ? "row-reverse" : "row",
@@ -121,24 +197,23 @@ const ChatDetailsPage = () => {
                 alignItems: "center",
               }}
             >
-          <Avatar
-            src={
-              message.user?.photos?.find((photo) => photo.isAvatar)?.photoURL
-                ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos.find((photo) => photo.isAvatar)?.photoURL}`
-                : message.user?.photos?.[0]?.photoURL
-                ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos[0].photoURL}`
-                : undefined
-            }
-            sx={{
-              bgcolor: message.senderId === user?.id ? "#3f51b5" : "#f50057",
-              color: "#fff",
-              width: 40,
-              height: 40,
-              fontSize: "1rem",
-            }}
-          >
-            {message.user?.firstName?.[0] || "U"}
-          </Avatar>
+              <Avatar
+                src={message.user?.photos?.find((photo) => photo.isAvatar)?.photoURL
+                  ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos.find((photo) => photo.isAvatar)?.photoURL}`
+                  : message.user?.photos?.[0]?.photoURL
+                  ? `${import.meta.env.VITE_PLANE_API_URI}${message.user.photos[0].photoURL}`
+                  : undefined
+                }
+                sx={{
+                  bgcolor: message.senderId === user?.id ? "#3f51b5" : "#f50057",
+                  color: "#fff",
+                  width: 40,
+                  height: 40,
+                  fontSize: "1rem",
+                }}
+              >
+                {message.user?.firstName?.[0] || "U"}
+              </Avatar>
               <Box
                 sx={{
                   padding: 2,
@@ -149,7 +224,9 @@ const ChatDetailsPage = () => {
                   maxWidth: "70%",
                 }}
               >
-                <Typography variant="body1">{message.text}</Typography>
+                <Typography variant="body1">
+                  {highlightText(message.text, searchQuery)}
+                </Typography>
                 <Typography
                   variant="caption"
                   sx={{ display: "block", marginTop: 0.5, opacity: 0.6 }}
@@ -160,6 +237,25 @@ const ChatDetailsPage = () => {
             </ListItem>
           ))}
         </List>
+
+        {filteredMessages.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 2,
+              marginTop: 2,
+            }}
+          >
+            {/* <IconButton onClick={handlePreviousMessage}>
+              <ArrowBackIosIcon />
+            </IconButton>
+            <IconButton onClick={handleNextMessage}>
+              <ArrowForwardIcon />
+            </IconButton> */}
+          </Box>
+        )}
       </Box>
 
       <Box

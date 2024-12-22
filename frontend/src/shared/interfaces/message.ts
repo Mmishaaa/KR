@@ -6,6 +6,7 @@ export interface Message {
   chatId: string;
   senderId: string;
   user: RegisteredUser // sender
+  createdAt: string
 }
 
 export interface MessageViewModel {

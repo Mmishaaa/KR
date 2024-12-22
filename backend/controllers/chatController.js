@@ -95,7 +95,6 @@ class ChatController {
   async getAllChatsByUserIdAsync(req, res) {
     try {
       const { userId } = req.params;
-      console.log(`Fetching chats for userId: ${userId}`); 
   
       const user = await User.findOne({
         where: { id: userId },
@@ -119,7 +118,7 @@ class ChatController {
                       }
                     ]
                   }
-                ]
+                ],
               },
               {
                 model: User,
@@ -135,11 +134,9 @@ class ChatController {
             ]
           }
         ]
-      });      
+      });
   
       if (user) {
-        console.log('User found:', JSON.stringify(user, null, 2)); 
-  
         const chats = user.chats.map(chat => ({
           ...chat.toJSON(),
           users: chat.users.filter(u => u.id !== userId)
@@ -154,6 +151,7 @@ class ChatController {
       res.status(500).json({ msg: "Error fetching user's chats", error: error.message || error });
     }
   }
+  
   
 }
 
