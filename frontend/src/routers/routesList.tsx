@@ -6,6 +6,7 @@ import NotFoundPage from "../pages/NotFoundPage";
 import HitOrMissPage from "../pages/HitOrMissPage";
 import AuthPage from '../pages/AuthPage';
 import MapPage from '../pages/MapPage';
+import ChatDetailsPage from '../pages/ChatDetailsPage';
 
 interface RouterType {
   title: string;
@@ -16,6 +17,7 @@ interface RouterType {
 export const publicRoutes: RouterType[] = [
   { title: "Likes", path: '/likes', element: <LikesPage /> },
   { title: "Chats", path: '/chats', element: <ChatsPage /> },
+  { title: "PrivateChat", path: '/chats/:id', element: <ChatDetailsPage  /> },
   { title: "Home", path: '/near', element: <NearPage /> },
   { title: "HitOrMiss", path: "/", element: <HitOrMissPage /> },
   { title: "Profile", path: "/profiles/:id", element: <ProfilePage /> },

@@ -93,7 +93,7 @@ class ChatController {
           model: Chat,
           as: 'chats',
           include: [
-            { model: Message, as: 'messages' },
+            { model: Message, as: 'messages',include:  { model: User, as: 'user' }, },
             { 
               model: User,
               as: 'users',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FC } from "react";
+import { useEffect, FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../state/store";
 import { getAllChatsByUserId } from "../../state/chats/chatsSlice";
@@ -14,15 +14,18 @@ import {
 import NotificationsNoneSharpIcon from "@mui/icons-material/NotificationsNoneSharp";
 import GenericPage from "./GenericPage";
 
+import { useNavigate } from "react-router-dom";
+
 const ChatsPage: FC = () => {
-  const { user } = useSelector((state: RootState) => state.user)
+  const { user } = useSelector((state: RootState) => state.user);
   const { chats } = useSelector((state: RootState) => state.chats);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if(user) {
+    if (user) {
       dispatch(getAllChatsByUserId(user?.id));
-    }    
+    }
   }, [dispatch]);
 
   return (
@@ -33,7 +36,11 @@ const ChatsPage: FC = () => {
         </Typography>
         <List>
           {chats.map((chat) => (
-            <ListItem key={chat.id} sx={{ padding: "10px 0" }}>
+            <ListItem
+              key={chat.id}
+              sx={{ padding: "10px 0", cursor: "pointer" }}
+              onClick={() => navigate(`/chats/${chat.id}`)}
+            >
               <ListItemAvatar>
                 <Avatar
                   src={
@@ -53,12 +60,6 @@ const ChatsPage: FC = () => {
                     : "No messages yet"
                 }
               />
-              {/* <Typography variant="caption" sx={{ marginLeft: "auto", color: "gray" }}>
-                {new Date(chat.createdAt).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Typography> */}
             </ListItem>
           ))}
         </List>
@@ -66,5 +67,6 @@ const ChatsPage: FC = () => {
     </GenericPage>
   );
 };
+
 
 export default ChatsPage;
