@@ -72,7 +72,6 @@ export const getAllChatsByUserId = (
   }
 };
 
-
 export const addMessageToChatAsync = (
   message: MessageViewModel
 ): ThunkAction<Promise<void>, RootState, unknown, any> => async (dispatch: Dispatch) => {

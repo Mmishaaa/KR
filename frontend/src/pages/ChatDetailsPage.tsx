@@ -2,12 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../../state/store";
-import { addMessageToChatAsync } from "../../state/chats/chatsSlice";
+import { addMessageToChatAsync, getAllChatsByUserId, getChatByIdAsync } from "../../state/chats/chatsSlice";
 import { Box, Typography, List, ListItem, TextField, Button, Avatar, IconButton } from "@mui/material";
 import { MessageViewModel } from "../shared/interfaces/message";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const highlightText = (text: string, searchTerm: string) => {
   if (!searchTerm) return text;
@@ -30,6 +28,7 @@ const ChatDetailsPage = () => {
   const [newMessage, setNewMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const navigate = useNavigate();
 
@@ -68,7 +67,7 @@ const ChatDetailsPage = () => {
     navigate("/chats");
   };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     if (chatId && user) {
@@ -78,26 +77,16 @@ const ChatDetailsPage = () => {
         senderId: user?.id,
       };
 
-      dispatch(addMessageToChatAsync(message));
+      await dispatch(addMessageToChatAsync(message));
+      await dispatch(getAllChatsByUserId(user.id))
       setNewMessage("");
+      setForceUpdate(!forceUpdate);
     }
   };
 
   const filteredMessages = chat.messages.filter((message) =>
     message.text.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const handleNextMessage = () => {
-    if (filteredMessages.length === 0) return;
-    const nextIndex = (currentMessageIndex + 1) % filteredMessages.length;
-    setCurrentMessageIndex(nextIndex);
-  };
-
-  const handlePreviousMessage = () => {
-    if (filteredMessages.length === 0) return;
-    const prevIndex = (currentMessageIndex - 1 + filteredMessages.length) % filteredMessages.length;
-    setCurrentMessageIndex(prevIndex);
-  };
 
   return (
     <Box
