@@ -33,6 +33,8 @@ const ProfileCard: FC<ProfileCardProps> = ({ profile, onNextProfile }) => {
     }
   };
 
+  console.log("profile: ", profile)
+
   return (
     <Card sx={{ borderRadius: 3, boxShadow: 3, overflow: "hidden" }}>
       <Box sx={{ position: "relative" }}>

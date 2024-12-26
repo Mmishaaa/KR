@@ -1,3 +1,4 @@
+import { Gender } from "../enums/gender";
 import { UserRole } from "../enums/userRole";
 import { Like } from "./like";
 import { Photo } from "./photo";
@@ -10,7 +11,8 @@ export interface Profile {
   userLocation: string;
   userDescription: string;
   userAge: number;
-  userRole: UserRole;
+  userRole: string;
+  gender: string;
   photos: Photo[];
   sentLikes: Like[];
   receivedLikes: Like[],
