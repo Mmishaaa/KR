@@ -113,19 +113,27 @@ const HitOrMissPage: FC = () => {
     );
   }
 
+  // const showNextProfile = () => {
+  //   if (filteredProfiles.length > 0) {
+  //     filteredProfiles.splice(currentIndex, 1);
+  
+  //     if (currentIndex < filteredProfiles .length - 1) {
+    //       setCurrentIndex(currentIndex + 1);
+    //     } else {
+      //       setCurrentIndex(0);
+      //     }
+      //     //setCurrentIndex((prevIndex) => (prevIndex + 1) % filteredProfiles.length);
+      //   } else {
+        //     console.warn("Filtered profiles are empty");
+        //   }
+        // };
+        
   const showNextProfile = () => {
     if (filteredProfiles.length > 0) {
-      filteredProfiles.splice(currentIndex, 1);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % filteredProfiles.length);
       dispatch(setProfiles(filteredProfiles ));
-
-      if (currentIndex < filteredProfiles .length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setCurrentIndex(0);
-      }
-      //setCurrentIndex((prevIndex) => (prevIndex + 1) % filteredProfiles.length);
     } else {
-      console.warn("Filtered profiles are empty");
+      console.warn("No profiles to display.");
     }
   };
 
@@ -156,12 +164,6 @@ const HitOrMissPage: FC = () => {
             <ToggleButton value="Descending">Age: Descending</ToggleButton>
           </ToggleButtonGroup>
         </Box>
-        {
-          console.log("filteredProfiles: ", filteredProfiles)
-        }
-        {
-          console.log("currentIndex: ", currentIndex)
-        }
         <Box
           sx={{
             backgroundColor: "#fff",
